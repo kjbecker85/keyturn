@@ -1,0 +1,20 @@
+# Render Blueprint for Keyturn.
+services:
+  - type: web
+    name: keyturn
+    runtime: node
+    plan: starter
+    region: virginia
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /login
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.0
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://taktpgtgpliueqpbnecs.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+        value: sb_publishable_F5EyCfrsHOW00zTZEstiOQ_UPap39dY
+      - key: DEMO_PASSWORD
+        sync: false
