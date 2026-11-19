@@ -160,6 +160,12 @@ function UnitReview({
       {flags?.map((f) => (
         <p key={f.id} className="text-sm text-sev2-ink">{f.title}</p>
       ))}
+      {unit.notes && (
+        <p className="rounded-xl bg-panel px-3.5 py-2.5 text-sm">
+          <span className="text-muted">Prior manager&apos;s note: </span>
+          <span className="font-medium">{unit.notes}</span>
+        </p>
+      )}
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {FIELDS.map((f) => (
           <label key={f.key} className="text-xs text-muted">
