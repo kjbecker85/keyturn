@@ -18,3 +18,6 @@ services:
         value: sb_publishable_F5EyCfrsHOW00zTZEstiOQ_UPap39dY
       - key: DEMO_PASSWORD
         sync: false
+      # Optional. Without it the assistant is off and drafts use a labeled template.
+      - key: ANTHROPIC_API_KEY
+        sync: false

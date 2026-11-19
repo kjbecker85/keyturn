@@ -21,8 +21,16 @@ export function Realtime() {
     for (const table of TABLES) {
       channel.on("postgres_changes", { event: "*", schema: "public", table }, refresh);
     }
-    channel.subscribe();
+    let cancelled = false;
+    // Row level security applies to live updates too, so the socket needs
+    // the user's token before it subscribes.
+    db.auth.getSession().then(async ({ data }) => {
+      if (cancelled) return;
+      await db.realtime.setAuth(data.session?.access_token ?? null);
+      channel.subscribe();
+    });
     return () => {
+      cancelled = true;
       clearTimeout(timer);
       db.removeChannel(channel);
     };
