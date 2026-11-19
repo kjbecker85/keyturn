@@ -1,0 +1,87 @@
+[
+ {
+  "date": "2026-01-01",
+  "name": "New Year's Day",
+  "global": true
+ },
+ {
+  "date": "2026-01-19",
+  "name": "Martin Luther King, Jr. Day",
+  "global": true
+ },
+ {
+  "date": "2026-02-12",
+  "name": "Lincoln's Birthday",
+  "global": false
+ },
+ {
+  "date": "2026-02-16",
+  "name": "Presidents Day",
+  "global": true
+ },
+ {
+  "date": "2026-04-03",
+  "name": "Good Friday",
+  "global": false
+ },
+ {
+  "date": "2026-04-03",
+  "name": "Good Friday",
+  "global": false
+ },
+ {
+  "date": "2026-05-08",
+  "name": "Truman Day",
+  "global": false
+ },
+ {
+  "date": "2026-05-25",
+  "name": "Memorial Day",
+  "global": true
+ },
+ {
+  "date": "2026-06-19",
+  "name": "Juneteenth National Independence Day",
+  "global": true
+ },
+ {
+  "date": "2026-07-03",
+  "name": "Independence Day",
+  "global": true
+ },
+ {
+  "date": "2026-09-07",
+  "name": "Labour Day",
+  "global": true
+ },
+ {
+  "date": "2026-10-12",
+  "name": "Columbus Day",
+  "global": false
+ },
+ {
+  "date": "2026-10-12",
+  "name": "Columbus Day",
+  "global": true
+ },
+ {
+  "date": "2026-10-12",
+  "name": "Indigenous Peoples' Day",
+  "global": false
+ },
+ {
+  "date": "2026-11-11",
+  "name": "Veterans Day",
+  "global": true
+ },
+ {
+  "date": "2026-11-26",
+  "name": "Thanksgiving Day",
+  "global": true
+ },
+ {
+  "date": "2026-12-25",
+  "name": "Christmas Day",
+  "global": true
+ }
+]
