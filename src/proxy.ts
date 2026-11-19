@@ -30,8 +30,10 @@ export async function proxy(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const signedIn = Boolean(data?.claims);
   const onLogin = request.nextUrl.pathname.startsWith("/login");
+  // The demo video page is open to anyone with the link.
+  const isPublic = request.nextUrl.pathname === "/demo";
 
-  if (!signedIn && !onLogin) {
+  if (!signedIn && !onLogin && !isPublic) {
     return redirectTo(request, response, "/login");
   }
   if (signedIn && onLogin) {
@@ -51,6 +53,6 @@ function redirectTo(request: NextRequest, from: NextResponse, path: string) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|.*\\.(?:png|svg|ico|webp|mjs)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|.*\\.(?:png|svg|ico|webp|mjs|mp4|jpg)$).*)",
   ],
 };
