@@ -1,0 +1,54 @@
+import { PageHeader } from "@/components/ui";
+import type { AuditRow } from "@/lib/data/types";
+import { createClient } from "@/lib/supabase/server";
+
+const ENTITY: Record<string, string> = {
+  tasks: "Task",
+  vendor_contracts: "Contract",
+  rent_roll_units: "Rent roll unit",
+  exceptions: "Exception",
+  drafts: "Draft",
+};
+
+const show = (v: unknown) => {
+  const s = typeof v === "string" ? v : JSON.stringify(v);
+  return s.length > 80 ? `${s.slice(0, 80)}…` : s;
+};
+
+export default async function ActivityPage() {
+  const db = await createClient();
+  const [{ data: audit }, { data: profiles }] = await Promise.all([
+    db.from("audit_log").select("*").order("created_at", { ascending: false }).limit(200),
+    db.from("profiles").select("id, full_name"),
+  ]);
+  const actor = Object.fromEntries((profiles ?? []).map((p) => [p.id, p.full_name]));
+  const rows = (audit ?? []) as AuditRow[];
+
+  return (
+    <>
+      <PageHeader
+        title="Activity"
+        subtitle="Every edit, with who made it and the before and after. The database writes these rows itself, so no change can skip the log."
+      />
+      <ul className="mx-4 mb-10 divide-y divide-line rounded-lg border border-line bg-panel">
+        {rows.length === 0 && <li className="px-4 py-6 text-sm text-muted">No edits yet.</li>}
+        {rows.map((a) => (
+          <li key={a.id} className="px-4 py-2.5 text-sm">
+            <span className="text-muted">{new Date(a.created_at).toLocaleString()}</span>{" "}
+            <span className="font-medium">{actor[a.actor_id ?? ""] ?? "System"}</span>{" "}
+            {a.action === "create" ? "created" : "changed"} {ENTITY[a.entity] ?? a.entity} #{a.entity_id}
+            {a.action === "update" && (
+              <ul className="mt-1 space-y-0.5 text-xs text-muted">
+                {Object.keys(a.after ?? {}).map((key) => (
+                  <li key={key}>
+                    {key}: {show(a.before?.[key] ?? null)} → {show(a.after?.[key] ?? null)}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}

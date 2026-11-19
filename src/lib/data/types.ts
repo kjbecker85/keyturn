@@ -95,13 +95,16 @@ export type ExceptionCandidate = {
   detail: string;
   due_date: string | null;
   sources: SourceRef[];
+  /** Who should pick this up first. People can reassign it. */
+  assignee?: string | null;
 };
 
-export type ExceptionRow = ExceptionCandidate & {
+export type ExceptionRow = Omit<ExceptionCandidate, "assignee"> & {
   id: number;
   status: "open" | "resolved" | "dismissed";
   assignee: string | null;
   resolution_note: string | null;
+  notes: { by: string; at: string; text: string }[];
   created_at: string;
   updated_at: string;
 };
@@ -131,4 +134,22 @@ export const AREA_LABEL: Record<Area, string> = {
   checklist: "Checklist",
   vendors: "Vendors",
   cross_sheet: "Cross-sheet",
+};
+
+export type Profile = {
+  id: string;
+  full_name: string;
+  title: string;
+  role: "director" | "regional_manager" | "assignee";
+};
+
+export type AuditRow = {
+  id: number;
+  actor_id: string | null;
+  entity: string;
+  entity_id: string;
+  action: string;
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  created_at: string;
 };

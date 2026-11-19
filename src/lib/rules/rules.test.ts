@@ -60,7 +60,7 @@ describe("rules on the data pack", () => {
       (e) => e.rule_key === "task.non_business_due" && e.title.includes("Migrate resident ledgers"),
     )!;
     expect(ledgers.due_date).toBe("2026-11-25");
-    expect(ledgers.sources).toHaveLength(9);
+    expect(ledgers.sources).toHaveLength(8); // one property already finished it
   });
 });
 

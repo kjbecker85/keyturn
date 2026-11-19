@@ -1,0 +1,32 @@
+import type { Area } from "../data/types";
+
+/** Plain-language description of every rule, for the assumptions page and README. */
+export const RULES: { key: string; area: Area; label: string }[] = [
+  { key: "rr.no_resident", area: "rent_roll", label: "Occupied or on notice with no resident name" },
+  { key: "rr.zero_rent", area: "rent_roll", label: "Occupied or on notice at $0 lease rent" },
+  { key: "rr.dates_reversed", area: "rent_roll", label: "Lease ends before it starts" },
+  { key: "rr.duplicate_unit", area: "rent_roll", label: "Same unit number listed more than once" },
+  { key: "rr.zero_sqft", area: "rent_roll", label: "Unit listed at 0 square feet" },
+  { key: "rr.below_market", area: "rent_roll", label: "Lease rent more than 20% below market" },
+  { key: "rr.zero_deposit", area: "rent_roll", label: "Occupied by a named resident with $0 deposit" },
+  { key: "rr.month_to_month", area: "rent_roll", label: "Occupied units past lease end (one per property)" },
+  { key: "rr.delinquency", area: "rent_roll", label: "Resident balances owed (one per property)" },
+  { key: "rr.missing", area: "rent_roll", label: "No rent roll received for the property" },
+  { key: "task.blocked", area: "checklist", label: "Task is blocked" },
+  { key: "task.unassigned", area: "checklist", label: "Task has no assignee" },
+  { key: "task.overdue", area: "checklist", label: "Task is past its due date" },
+  { key: "task.stale", area: "checklist", label: "Open task with no update in more than 7 days" },
+  { key: "task.non_business_due", area: "checklist", label: "Due date falls on a weekend or holiday (one per task type)" },
+  { key: "vendor.notice_missed", area: "vendors", label: "Auto-renewing contract whose notice window has passed" },
+  { key: "vendor.notice_upcoming", area: "vendors", label: "Auto-renewing contract with a notice deadline before Dec 31" },
+  { key: "vendor.lapses", area: "vendors", label: "Contract ends before takeover and does not auto-renew" },
+  { key: "vendor.coi_expired", area: "vendors", label: "Certificate of insurance has expired" },
+  { key: "vendor.not_assignable", area: "vendors", label: "Contracts that can't transfer to a new manager (one per property)" },
+  { key: "vendor.duplicate_service", area: "vendors", label: "Two contracts for the same service at one property" },
+  { key: "cross.contracts_exist", area: "cross_sheet", label: "Checklist says contracts weren't received, vendor sheet lists them" },
+  { key: "cross.review_complete_with_issues", area: "cross_sheet", label: "Vendor review marked complete with contract problems open" },
+  { key: "cross.coi_task_complete", area: "cross_sheet", label: "COI collection marked complete with an expired certificate" },
+  { key: "cross.rent_roll_marked_received", area: "cross_sheet", label: "Rent roll marked received but absent from the data" },
+  { key: "cross.loading_before_clean", area: "cross_sheet", label: "Yardi setup or ledger migration under way without a clean rent roll" },
+  { key: "cross.access_handover", area: "cross_sheet", label: "Gate vendor contract won't carry over to the access handover" },
+];

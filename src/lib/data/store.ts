@@ -3,7 +3,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { runRules } from "../rules";
 import { buildSeed } from "./datapack";
-import type { Contract, Dataset, ExceptionRow, Property, Task, Unit } from "./types";
+import type { Contract, Dataset, ExceptionRow, Property, SourceRef, Task, Unit } from "./types";
 
 export const AUTO_CLEARED = "Cleared automatically: the data no longer triggers this rule.";
 
@@ -11,6 +11,10 @@ function must<T>(result: { data: T | null; error: { message: string } | null }):
   if (result.error) throw new Error(result.error.message);
   return result.data as T;
 }
+
+// Postgres returns jsonb keys in its own order, so compare by content.
+const sourceKey = (sources: SourceRef[]) =>
+  sources.map((s) => `${s.table}:${s.id}:${s.row}:${s.label}`).join("|");
 
 const num = (v: unknown) => (v === null || v === undefined ? null : Number(v));
 
@@ -74,7 +78,7 @@ export async function syncExceptions(db: SupabaseClient) {
       row.detail !== c.detail ||
       row.severity !== c.severity ||
       row.due_date !== c.due_date ||
-      JSON.stringify(row.sources) !== JSON.stringify(c.sources);
+      sourceKey(row.sources) !== sourceKey(c.sources);
     if (!changed && !reopened) continue;
     must(
       await db

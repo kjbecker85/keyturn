@@ -1,8 +1,3 @@
-// The app treats the data pack's as-of date as "today".
-export const TODAY = "2026-10-16";
-export const TODAY_LABEL = "Friday, October 16, 2026";
-export const TAKEOVER_LABEL = "December 1, 2026";
-
 export const DEMO_ACCOUNTS = [
   {
     role: "director",

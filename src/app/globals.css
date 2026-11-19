@@ -27,3 +27,62 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+:root {
+  --sev1: #f2777a;
+  --sev2: #f59e5b;
+  --sev3: #e8c85a;
+  --sev4: #8d9ab5;
+  --ok: #5ccf9a;
+  --panel2: #18233a;
+}
+
+@theme inline {
+  --color-sev1: var(--sev1);
+  --color-sev2: var(--sev2);
+  --color-sev3: var(--sev3);
+  --color-sev4: var(--sev4);
+  --color-ok: var(--ok);
+  --color-panel2: var(--panel2);
+}
+
+html {
+  color-scheme: dark;
+}
+
+/* Shared control styles */
+.btn {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-line bg-panel2 px-3 py-1.5 text-sm transition hover:border-accent disabled:opacity-50;
+}
+.btn-primary {
+  @apply border-accent bg-accent font-medium text-background hover:brightness-110;
+}
+.field {
+  @apply w-full rounded-md border border-line bg-background px-2.5 py-1.5 text-sm outline-none focus:border-accent;
+}
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full border border-line px-2 py-0.5 text-xs text-muted;
+}
+.card {
+  @apply rounded-lg border border-line bg-panel;
+}
+
+.keyturn-pin {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  border: 2px solid #0b1220;
+  color: #0b1220;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.5);
+}
+.keyturn-pin[data-selected="true"] {
+  outline: 3px solid #e6ebf5;
+}
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}
