@@ -8,6 +8,8 @@ manager's rent roll, the 126-task transition checklist and the 49 vendor contrac
 what is wrong or at risk, and puts it in one ranked inbox that the Director of Transitions can
 act on. Every flag links back to the spreadsheet row that caused it.
 
+**Live demo:** https://keyturn-4hfl.onrender.com (pick any demo role to sign in)
+
 It covers the window before the properties exist in Yardi. That window runs on exports,
 spreadsheets and email today, and no system owns it.
 

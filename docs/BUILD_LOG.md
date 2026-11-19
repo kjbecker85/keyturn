@@ -23,7 +23,7 @@ How Keyturn was built, in order, including the mistakes. Built with Claude Code
 | P3 | Live updates | The socket subscribed before it had the user's token, so row level security dropped every event. Fixed by setting the token first, then verified by changing a row from outside the app. |
 | P4 | Map, readiness, property pages | The map rendered at zero height because the map library overrides the container's positioning. Its worker file also had to be served from the app. |
 | P4 | Rent roll review | Property roll-ups ("60 units past lease end") marked their example rows as flagged, which made 17 clean-looking rows show a flag. Roll-ups no longer flag rows. |
-| P5 | Assistant and drafting | No Claude key was available during the build, so the assistant and Claude-written drafts were not run end to end. The query tools are unit tested and drafts fall back to a labeled template. |
+| P5 | Assistant and drafting | No Claude key was available overnight. On Nov 19 the assistant was run against the live API with 10 questions (`npm run ask-check`): every citation matched a record it had looked up, and it said so when the data could not answer. One answer warned it had seen only 60 of 117 tasks, so the row limits were raised. |
 | P6 | Holiday rule, morning brief | Weather, Census and flood overlays were cut. Dec 1 was outside any forecast window on Oct 16. |
 
 ## What was checked, and how
@@ -31,9 +31,9 @@ How Keyturn was built, in order, including the mistakes. Built with Claude Code
 - 56 unit tests: every messy format in the rent roll, rule counts against the independent Python profile, rules reacting to edits, and the assistant's query tools.
 - In a browser: sign-in, the inbox, drafting an escalation, the map and its panel, editing a task and seeing its exception clear, the audit log, and phone width with no sideways scroll.
 - Live updates: changed a row directly in the database and watched an open inbox update.
+- Hosted: signed in on Render and asked the assistant a question there.
 
 ## Not checked
 
-- The assistant and Claude-written drafts against the live API.
+- Claude-written drafts against the live API (the assistant was checked).
 - Installing to a phone home screen on a real device.
-- The hosted deployment on Render.

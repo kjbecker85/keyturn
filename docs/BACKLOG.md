@@ -4,17 +4,11 @@ Parked during the overnight build of Nov 18. Items 1 to 3 block the deliverables
 
 ## Needs you
 
-### 1. Render service (blocks the public link)
-`keyturn.onrender.com` answered "no-server" when I checked, and the Render dashboard needs your sign-in.
-- Open the `keyturn` service in Render and send me its address and deploy status, or paste the deploy log if it failed.
-- Or give me a Render API key and I will create and check it myself.
-- `main` has everything. The service needs two secret values: `DEMO_PASSWORD` (in `.env.local`) and `ANTHROPIC_API_KEY`.
+### 1. Render service: done Nov 19
+Live at https://keyturn-4hfl.onrender.com on the Starter plan, with both secrets set.
 
-### 2. Claude API key (blocks the assistant and Claude-written drafts)
-You said to use your existing key. It is not set in this shell, and I was blocked from searching your other projects for it.
-- Add `ANTHROPIC_API_KEY=...` to `.env.local` here, and to the Render service.
-- Until then the Ask screen is off and drafts use a plain template that says so.
-- These two features have never run against the live API. I need about 15 minutes with a key to test and tune them.
+### 2. Claude API key: done Nov 19
+Set locally and on Render. The assistant was checked against 10 questions.
 
 ### 3. Reviewer access to the GitHub repo
 Hannah listed five reviewers by email. GitHub needs usernames, or I can invite by email.
