@@ -1,4 +1,4 @@
-# Transition Command Center — Spec v0.1
+# Keyturn — Transition Command Center Spec v0.1
 
 Scenario A, Property Transitions. Asset Living build exercise.
 Panel: Monday Nov 23, 2026. Video and repo go to the reviewers before then.
@@ -180,9 +180,9 @@ Technical checks:
 - The AI never answers without citations. Tested with 10 scripted questions.
 - Lighthouse PWA installable, mobile layout at 375px with no horizontal scroll.
 
-## 9. Open questions
+## 9. Setup decisions (resolved 2026-11-18)
 
-1. Supabase: a new project under your existing org, or a new org?
-2. Claude API key: use your existing key, or create one for this project?
-3. GitHub: private repo shared with the five reviewers, or public?
-4. App name: working title "Day One."
+1. Supabase: new project in the existing org.
+2. Claude API key: existing key.
+3. GitHub: private repo, shared with the five reviewers.
+4. App name: Keyturn. "Day One" was rejected because Automattic holds a registered DAY ONE software trademark. A web search found no software named Keyturn. This is not a trademark clearance.
