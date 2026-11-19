@@ -44,3 +44,6 @@ next-env.d.ts
 # Office lock files
 ~$*
 /public/maplibre-gl-worker.mjs
+
+# Demo video working files
+/video/
