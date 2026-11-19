@@ -27,11 +27,17 @@ const dropWaits = cuts.length
 const last = scenes.at(-1);
 const narrationEnd = at(last) + LEAD + last.audio;
 
-// Intro cut scenes run back to back under the first 24 seconds of narration.
+// Intro cut scenes run back to back under the first 21 seconds of narration.
 // The sign-off cut scene covers the last lines.
 const placements = [];
+// The desk clip opens with a generation glitch, so it is used from 2.4 seconds in.
+const INTRO = [{ skip: 0, len: CUT_LEN }, { skip: 2.4, len: 5.6 }, { skip: 0, len: CUT_LEN }];
 const intro = clips.slice(0, 3);
-intro.forEach((file, i) => placements.push({ file, start: at(scenes[0]) + i * (CUT_LEN - FADE), fadeIn: i > 0, skip: 0, len: CUT_LEN }));
+let introAt = at(scenes[0]);
+intro.forEach((file, i) => {
+  placements.push({ file, start: introAt, fadeIn: i > 0, ...INTRO[i] });
+  introAt += INTRO[i].len - FADE;
+});
 // The sign-off clip rises from the walkway to a wide view of the whole community.
 const OUTRO = { skip: 0.4, len: 7.6 };
 if (clips[3]) placements.push({ file: clips[3], start: narrationEnd - (OUTRO.len - 1.6), fadeIn: true, outro: true, ...OUTRO });
