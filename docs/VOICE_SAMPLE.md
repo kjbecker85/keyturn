@@ -1,6 +1,7 @@
 # Voice sample script
 
 Read this once to make the voice clone. It runs about 90 seconds at a normal pace.
+It is written in your own speaking style, taken from how you dictate in past sessions, and tidied up.
 
 ## Before you record
 
@@ -12,14 +13,14 @@ Read this once to make the voice clone. It runs about 90 seconds at a normal pac
 
 ## Read this aloud
 
-Hi, I'm Kyle Becker. I'm going to walk you through something I built this week, and I'll keep it short.
+Okay, let's get started. My name is Kyle Becker, and I'm going to walk you through a tool I built this week.
 
-Here's the situation. A property owner hires a new management company, and on day one, nine apartment communities change hands. That sounds simple. It isn't. There are rent rolls to check, more than a hundred tasks to finish, and about fifty vendor contracts, each with its own deadline.
+First, some background. A property owner hires a management company to run their apartment communities. When the owner switches to a new company, that handoff is called a transition. In this case, nine properties in Texas change hands on December first.
 
-So what goes wrong? Usually it's the small things. A contract renews because nobody sent notice in time. A unit shows as occupied, but nobody's name is on the lease. A task sits blocked for ten days, and no one notices until the first of December.
+There are three things the new manager has to get right before that date. The first is the rent roll. A rent roll is a list of every unit, who lives there, and what they pay. The second is the checklist. There are a hundred and twenty-six tasks, and each one has an owner and a due date. The third is the vendor contracts. There are forty-nine of them, and a lot of them renew on their own if you don't give notice in time.
 
-I wanted one screen that answers a plain question: what needs my attention today? Not a report. Not a slide. Something a director could open on Monday morning and act on.
+Here's the problem. Right now all of that lives in spreadsheets and email, so things get missed. For example, one contract needed ninety days' notice, and that date passed in August.
 
-Does it do everything? No. I'll show you what works, what doesn't yet, and what I'd build next. Some of the numbers are worth a second look: fourteen critical items, forty-six days to go, and seventy-three thousand dollars owed by residents.
+So I built one screen that pulls all three together. It shows you what's wrong, who owns it, and when it's due. I'm going to show you what works and what doesn't work yet. Then I'll tell you what I would build next.
 
-Thanks for watching. Let's get into it.
+All right, let's take a look.
