@@ -36,8 +36,8 @@ export function Hero({ dash }: { dash: Dashboard }) {
         className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full opacity-60 blur-3xl"
         style={{ background: "radial-gradient(circle, var(--accent-soft), transparent 70%)" }}
       />
-      <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
-        <svg viewBox="0 0 340 340" className="w-60 shrink-0 2xl:w-72" role="img" aria-label={`Portfolio readiness ${dash.portfolio} out of 100`}>
+      <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:gap-8 xl:gap-5 2xl:gap-8">
+        <svg viewBox="0 0 340 340" className="w-60 shrink-0 xl:w-48 2xl:w-72" role="img" aria-label={`Portfolio readiness ${dash.portfolio} out of 100`}>
           <defs>
             <linearGradient id="hero-grad" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" style={{ stopColor: "var(--accent-bright)" }} />
@@ -90,11 +90,11 @@ export function Hero({ dash }: { dash: Dashboard }) {
         </svg>
 
         <div className="min-w-0 flex-1 text-center sm:text-left">
-          <p className="eyebrow whitespace-nowrap">Takeover {formatDate(TAKEOVER)}</p>
-          <p className="display mt-1 text-7xl leading-none font-semibold md:text-8xl">
+          <p className="eyebrow">Takeover {formatDate(TAKEOVER)}</p>
+          <p className="display mt-1 text-7xl leading-none font-semibold md:text-8xl xl:text-7xl 2xl:text-8xl">
             <CountUp value={days} />
           </p>
-          <p className="mt-2 text-lg font-medium whitespace-nowrap">days to Day One</p>
+          <p className="mt-2 text-lg font-medium whitespace-nowrap xl:text-base 2xl:text-lg">days to Day One</p>
           <p className="mt-1 text-sm text-muted">
             Each outer arc is one of the nine properties.
           </p>
