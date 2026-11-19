@@ -6,7 +6,8 @@ services:
     plan: starter
     region: virginia
     branch: main
-    buildCommand: npm ci && npm run build
+    # Start from a clean .next: a reused Turbopack cache served a stale stylesheet once.
+    buildCommand: rm -rf .next && npm ci && npm run build
     startCommand: npm run start
     healthCheckPath: /login
     envVars:

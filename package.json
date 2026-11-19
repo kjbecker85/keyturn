@@ -11,8 +11,8 @@
     "seed": "tsx --env-file=.env.local scripts/seed.ts",
     "typecheck": "tsc --noEmit",
     "copy-map-worker": "cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs public/maplibre-gl-worker.mjs",
-    "predev": "npm run copy-map-worker",
-    "prebuild": "npm run copy-map-worker",
+    "predev": "npm run copy-map-worker && rm -rf .next/dev",
+    "prebuild": "npm run copy-map-worker && rm -rf .next/cache",
     "ask-check": "tsx --conditions=react-server --env-file=.env.local scripts/ask-check.ts"
   },
   "dependencies": {
