@@ -9,7 +9,6 @@ Narration is about 890 words, written in Kyle's speaking voice (see the kyles-vo
 2. Reset the data: Assumptions, then **Reset demo data**. This puts every number back to what the script says.
 3. Light theme, comfortable text size (both under the user menu).
 4. Do one silent dry run of the click path first. Scene 6 changes data, so reset again before the real take.
-5. Fill in the two bracketed blanks in Scene 11 before the narration is generated.
 
 Numbers the script relies on after a reset: 46 days, readiness 58, 116 open exceptions, 14 critical, Brazos Landing at 78.
 
@@ -96,7 +95,7 @@ There's also a map for the regional manager, and a triage screen that shows one 
 **Narration:**
 All right, here's what it doesn't do yet. It doesn't send email, and it doesn't connect to Yardi. It only runs on the data pack, so you can't upload a new rent roll. If I had another week, I would build that upload, and I would build the Yardi import with your team.
 
-I spent about [HOURS] hours on this, and most of that went to [WHERE THE TIME WENT]. I built it with Claude Code, and the assistant inside the tool is Claude. One more thing you should know. This narration is an AI copy of my own voice, made with ElevenLabs. You'll hear the real one on Monday. Thanks for watching.
+I spent about eight hours on this. The first part went to understanding the problem. That means the scenario, the terms, and what was wrong in the data. That's where I decided what to build and what to leave out. The build itself went fast, because I used Claude Code, and the assistant inside the tool is Claude. After that I spent my time on the screens. I threw out the first design because it was too dark and too dense. One more thing you should know. This narration is an AI copy of my own voice, made with ElevenLabs. You'll hear the real one on Monday. Thanks for watching.
 
 ---
 
