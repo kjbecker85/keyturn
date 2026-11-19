@@ -66,8 +66,8 @@ export function buildTools(data: Dataset, exceptions: ExceptionRow[], citations:
       );
       return {
         total_matching: rows.length,
-        showing: Math.min(rows.length, 40),
-        exceptions: rows.slice(0, 40).map((e) => ({
+        showing: Math.min(rows.length, 120),
+        exceptions: rows.slice(0, 120).map((e) => ({
           ref: cite(`EX-${e.id}`, `/?status=all&focus=${e.id}`),
           severity: SEVERITY_LABEL[e.severity],
           area: AREA_LABEL[e.area],
@@ -95,8 +95,8 @@ export function buildTools(data: Dataset, exceptions: ExceptionRow[], citations:
       );
       return {
         total_matching: rows.length,
-        showing: Math.min(rows.length, 60),
-        tasks: rows.slice(0, 60).map((t) => ({
+        showing: Math.min(rows.length, 130),
+        tasks: rows.slice(0, 130).map((t) => ({
           ref: cite(`TASK-${t.id}`, `/tasks?focus=${t.id}`),
           property: propertyName.get(t.property_id),
           task: t.task,
