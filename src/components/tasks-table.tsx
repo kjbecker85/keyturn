@@ -1,19 +1,21 @@
 "use client";
 
 import { Fragment, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { updateTask } from "@/app/(app)/actions";
 import { formatShort, isBusinessDay } from "@/lib/dates";
 import type { Flag } from "@/lib/flags";
 import type { Property, Task } from "@/lib/data/types";
 import { FlagBadges } from "./flag-badges";
+import { FUNCTION_ICON } from "./icons";
 import { useAction, useFocusRow } from "./use-action";
 
 const STATUSES = ["Not Started", "In Progress", "Blocked", "Complete"];
 const STATUS_COLOR: Record<string, string> = {
   "Not Started": "text-muted",
-  "In Progress": "text-sev3",
-  Blocked: "text-sev1",
-  Complete: "text-ok",
+  "In Progress": "text-indigo font-medium",
+  Blocked: "text-sev1-ink font-semibold",
+  Complete: "text-ok-ink font-medium",
 };
 
 export function TasksTable({
@@ -27,8 +29,9 @@ export function TasksTable({
 }) {
   const { pending, error, run } = useAction();
   const focus = useFocusRow();
-  const [property, setProperty] = useState("");
-  const [fn, setFn] = useState("");
+  const params = useSearchParams();
+  const [property, setProperty] = useState(params.get("property") ?? "");
+  const [fn, setFn] = useState(params.get("fn") ?? "");
   const [status, setStatus] = useState("");
   const [assignee, setAssignee] = useState("");
   const [open, setOpen] = useState<number | null>(focus);
@@ -45,7 +48,7 @@ export function TasksTable({
   );
 
   return (
-    <div className="px-4 pb-8">
+    <div className="px-4 pb-10 md:px-8">
       <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
         <select className="field" aria-label="Property" value={property} onChange={(e) => setProperty(e.target.value)}>
           <option value="">All properties</option>
@@ -71,15 +74,15 @@ export function TasksTable({
       <p className="mb-2 text-xs text-muted">{rows.length} tasks</p>
 
       <div className="card overflow-x-auto">
-        <table className="w-full min-w-[720px] text-sm">
-          <thead className="text-left text-xs text-muted">
-            <tr className="border-b border-line">
-              <th className="px-3 py-2 font-medium">Task</th>
-              <th className="px-3 py-2 font-medium">Property</th>
-              <th className="px-3 py-2 font-medium">Due</th>
-              <th className="px-3 py-2 font-medium">Status</th>
-              <th className="px-3 py-2 font-medium">Assignee</th>
-              <th className="px-3 py-2 font-medium" />
+        <table className="tbl w-full min-w-[720px] text-sm">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Property</th>
+              <th>Due</th>
+              <th>Status</th>
+              <th>Assignee</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -87,23 +90,28 @@ export function TasksTable({
               <Fragment key={t.id}>
                 <tr
                   id={`row-${t.id}`}
-                  className={`border-b border-line ${focus === t.id ? "bg-accent/10" : ""}`}
+                  className={focus === t.id ? "bg-accent-soft" : ""}
                 >
-                  <td className="px-3 py-2">
-                    <button type="button" className="text-left hover:text-accent" onClick={() => setOpen(open === t.id ? null : t.id)}>
-                      {t.task}
-                    </button>
-                    <span className="block text-xs text-muted">
-                      {t.function}
-                      {t.critical_path ? " · critical path" : ""}
+                  <td>
+                    <span className="flex items-start gap-3">
+                      <FunctionMark fn={t.function} />
+                      <span>
+                        <button type="button" className="text-left font-medium hover:text-accent-strong" onClick={() => setOpen(open === t.id ? null : t.id)}>
+                          {t.task}
+                        </button>
+                        <span className="block text-xs text-muted">
+                          {t.function}
+                          {t.critical_path ? " · critical path" : ""}
+                        </span>
+                      </span>
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-muted">{name.get(t.property_id)}</td>
-                  <td className="whitespace-nowrap px-3 py-2">
+                  <td className="text-muted">{name.get(t.property_id)}</td>
+                  <td className="whitespace-nowrap">
                     {formatShort(t.due_date)}
-                    {!isBusinessDay(t.due_date) && <span className="block text-xs text-sev3">non-business day</span>}
+                    {!isBusinessDay(t.due_date) && <span className="block text-xs text-sev3-ink">non-business day</span>}
                   </td>
-                  <td className="px-3 py-2">
+                  <td>
                     <select
                       className={`field min-w-28 ${STATUS_COLOR[t.status]}`}
                       aria-label="Status"
@@ -114,7 +122,7 @@ export function TasksTable({
                       {STATUSES.map((s) => <option key={s}>{s}</option>)}
                     </select>
                   </td>
-                  <td className="px-3 py-2">
+                  <td>
                     <select
                       className="field min-w-28"
                       aria-label="Assignee"
@@ -126,11 +134,11 @@ export function TasksTable({
                       {assignees.map((a) => <option key={a}>{a}</option>)}
                     </select>
                   </td>
-                  <td className="px-3 py-2"><FlagBadges flags={flags[t.id]} /></td>
+                  <td><FlagBadges flags={flags[t.id]} /></td>
                 </tr>
                 {open === t.id && (
-                  <tr className="border-b border-line bg-background/60">
-                    <td colSpan={6} className="px-3 py-3">
+                  <tr className="bg-panel2/60">
+                    <td colSpan={6} className="!py-4">
                       <TaskEditor task={t} flags={flags[t.id]} pending={pending} run={run} />
                     </td>
                   </tr>
@@ -141,6 +149,15 @@ export function TasksTable({
         </table>
       </div>
     </div>
+  );
+}
+
+function FunctionMark({ fn }: { fn: string }) {
+  const Icon = FUNCTION_ICON[fn];
+  return (
+    <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-indigo-soft text-indigo" title={fn}>
+      {Icon && <Icon weight="duotone" className="size-4.5" />}
+    </span>
   );
 }
 

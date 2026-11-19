@@ -23,7 +23,9 @@ spreadsheets and email today, and no system owns it.
 
 ## What it does
 
+- **Overview dashboard.** The home screen: a countdown ring with portfolio readiness, a runway timeline of every deadline from today to Day One by property, a checklist heatmap by property and function, open exceptions by area and severity, dollars at stake, and a Day One pass for each property.
 - **Exceptions inbox.** 27 rules run over the three sheets and raise 116 exceptions, ranked by severity and due date. Each one says why it fired and links to its source rows. Assign, add a note, resolve, or dismiss with a reason.
+- **Triage mode.** One exception at a time, most urgent first. Resolve, take, escalate or skip with a key or a swipe.
 - **Read and write.** Edit task status, assignee, due date and notes. Record keep, terminate or renegotiate on each contract. Review and correct rent roll rows with the prior manager's original cell shown next to each field. Every edit re-runs the rules, so fixing the data clears the exception.
 - **Audit trail.** A database trigger logs every change with who made it and the before and after values. The app can't skip it.
 - **Live updates.** A change in one session shows up in every other open session.
@@ -32,6 +34,7 @@ spreadsheets and email today, and no system owns it.
 - **Drafts.** Escalation emails, vendor termination notices and owner status reports, written from the facts in the source rows. Edit, then mark as sent.
 - **Morning brief.** Each assignee's blocked tasks, upcoming deadlines and shifted dates.
 - **Phone.** Every screen works at 375px and the app installs to the home screen.
+- **Display.** Light by default with a dark theme, and a comfortable or compact text size, both under the user menu.
 
 ## What it found in the data
 
@@ -100,6 +103,8 @@ The same list is in the app under Assumptions.
 | Data | Supabase Postgres with row level security, audit triggers and Realtime |
 | Rules | Plain TypeScript in `src/lib/rules`, unit tested |
 | Map | MapLibre GL with OpenFreeMap tiles, no API key |
+| Charts | Hand-built SVG for the countdown ring, runway and heatmap. Nivo for the exceptions sunburst |
+| Icons | Phosphor, duotone weight |
 | AI | Claude API. Sonnet 5.5 for the assistant and escalations, Opus 5.5 for notices and reports |
 | Holidays | Nager.Date public holiday list, saved in `data/` |
 | Hosting | Render (`render.yaml`) |
@@ -110,6 +115,7 @@ src/lib/data/normalize.ts Unit numbers, money, dates and statuses into one forma
 src/lib/rules/index.ts    The 27 rules
 src/lib/data/store.ts     Load, reset, and sync exceptions with the data
 src/lib/readiness.ts      The readiness score
+src/lib/dashboard.ts      Everything the overview charts draw, computed from the same rows
 src/lib/ai/ask.ts         The assistant and its five query tools
 src/lib/ai/draft.ts       Drafting, with a labeled template when no key is set
 supabase/migrations/      Schema, RLS policies, audit trigger

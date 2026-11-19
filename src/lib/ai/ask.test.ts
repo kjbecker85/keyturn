@@ -43,7 +43,7 @@ describe("assistant query tools", () => {
     expect(result.total_matching).toBeGreaterThan(0);
     for (const row of result.exceptions) {
       expect(row.property).toBe("Trinity Bluffs");
-      expect(citations[String(row.ref)]).toMatch(/^\/\?status=all&focus=\d+$/);
+      expect(citations[String(row.ref)]).toMatch(/^\/inbox\?status=all&focus=\d+$/);
     }
   });
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useState, useTransition } from "react";
 import { askQuestion } from "@/app/(app)/ask/actions";
+import { Sparkle } from "./icons";
 
 type Message = {
   role: "user" | "assistant";
@@ -30,11 +31,11 @@ function Cited({ text, citations }: { text: string; citations: Record<string, st
         if (!ref) return <Fragment key={i}>{part.replace(/\*\*/g, "")}</Fragment>;
         const href = citations[ref];
         return href ? (
-          <Link key={i} href={href} className="mx-0.5 rounded border border-line px-1 text-xs text-accent hover:border-accent">
+          <Link key={i} href={href} className="mx-0.5 rounded-md bg-accent-soft px-1.5 py-0.5 font-mono text-[0.7rem] font-medium text-accent-strong hover:bg-accent hover:text-on-accent">
             {ref}
           </Link>
         ) : (
-          <span key={i} className="mx-0.5 text-xs text-sev1" title="This reference was not in the data the assistant looked up.">
+          <span key={i} className="mx-0.5 text-xs text-sev1-ink" title="This reference was not in the data the assistant looked up.">
             {ref}?
           </span>
         );
@@ -67,16 +68,17 @@ export function AskPanel({ enabled }: { enabled: boolean }) {
   };
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4 pb-10">
+    <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4 pb-10 md:px-8">
       {!enabled && (
-        <p className="rounded-md border border-sev3/40 px-3 py-2 text-sm text-sev3">
+        <p className="rounded-xl bg-sev3-soft px-4 py-3 text-sm text-sev3-ink">
           The assistant needs a Claude API key, and none is configured on this deployment. Every other screen works without it.
         </p>
       )}
       {messages.length === 0 && (
         <div className="grid gap-2 sm:grid-cols-2">
           {STARTERS.map((s) => (
-            <button key={s} type="button" className="card px-3 py-2.5 text-left text-sm hover:border-accent" disabled={!enabled} onClick={() => send(s)}>
+            <button key={s} type="button" className="card flex items-start gap-3 px-4 py-3.5 text-left text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-pop disabled:opacity-50" disabled={!enabled} onClick={() => send(s)}>
+              <Sparkle weight="duotone" className="mt-0.5 size-5 shrink-0 text-accent" />
               {s}
             </button>
           ))}
@@ -84,9 +86,9 @@ export function AskPanel({ enabled }: { enabled: boolean }) {
       )}
       {messages.map((m, i) =>
         m.role === "user" ? (
-          <p key={i} className="self-end rounded-lg bg-panel2 px-3 py-2 text-sm">{m.text}</p>
+          <p key={i} className="self-end rounded-2xl rounded-br-md bg-foreground px-4 py-2.5 text-sm text-background">{m.text}</p>
         ) : (
-          <div key={i} className="card px-4 py-3">
+          <div key={i} className="card rise px-5 py-4">
             <p className="whitespace-pre-wrap text-sm leading-relaxed">
               <Cited text={m.text} citations={m.citations ?? {}} />
             </p>
@@ -101,7 +103,12 @@ export function AskPanel({ enabled }: { enabled: boolean }) {
           </div>
         ),
       )}
-      {pending && <p className="text-sm text-muted">Looking that up…</p>}
+      {pending && (
+        <p className="flex items-center gap-2 text-sm text-muted">
+          <Sparkle weight="duotone" className="size-5 animate-pulse text-accent" />
+          Looking that up…
+        </p>
+      )}
       {error && <p className="text-sm text-danger">{error}</p>}
       <form
         className="sticky bottom-16 flex gap-2 md:bottom-4"
@@ -111,13 +118,13 @@ export function AskPanel({ enabled }: { enabled: boolean }) {
         }}
       >
         <input
-          className="field bg-panel"
+          className="field rounded-full px-5 py-3 shadow-card"
           placeholder="Ask about properties, tasks, contracts or the rent roll"
           value={input}
           disabled={!enabled}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary" disabled={!enabled || pending}>
+        <button type="submit" className="btn btn-primary rounded-full px-5" disabled={!enabled || pending}>
           Ask
         </button>
       </form>

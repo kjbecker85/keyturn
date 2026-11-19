@@ -11,8 +11,20 @@ import {
 } from "@/app/(app)/actions";
 import { formatShort } from "@/lib/dates";
 import { AREA_LABEL, SEVERITY_LABEL, type Area, type AuditRow, type ExceptionRow } from "@/lib/data/types";
+import Link from "next/link";
+import { AllClear } from "./all-clear";
 import { DraftButton } from "./draft-button";
-import { SeverityBadge, SeverityDot, SourceLink } from "./ui";
+import {
+  AREA_ICON,
+  Buildings,
+  CalendarBlank,
+  CheckCircle,
+  FUNCTION_ICON,
+  Lightning,
+  MagnifyingGlass,
+  SEVERITY_ICON,
+} from "./icons";
+import { AreaTag, SeverityBadge, SeverityMark, SourceLink, StatusTag } from "./ui";
 
 type Props = {
   exceptions: ExceptionRow[];
@@ -102,33 +114,57 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
     document.querySelector(`[data-exception="${selected?.id}"]`)?.scrollIntoView({ block: "nearest" });
   }, [selected?.id]);
 
+  const filtered = Boolean(filter.severity || filter.area || filter.property || filter.assignee || filter.q);
+
   return (
-    <div className="flex h-[calc(100dvh-45px)] flex-col">
-      <div className="border-b border-line px-4 py-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="mr-2 text-lg font-semibold tracking-tight">Exceptions inbox</h1>
-          {[1, 2, 3, 4].map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setFilter("severity", filter.severity === String(s) ? "" : String(s))}
-              className={`chip ${filter.severity === String(s) ? "border-accent text-foreground" : ""}`}
-            >
-              {SEVERITY_LABEL[s]} {open.filter((e) => e.severity === s).length}
-            </button>
-          ))}
-          <span className="ml-auto hidden text-xs text-muted lg:inline">
-            j/k move · e resolve · a assign · / search
+    <div className="flex h-[calc(100dvh-var(--header-h))] flex-col">
+      <div className="border-b border-line px-4 pt-5 pb-4 md:px-8">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h1 className="display mr-2 text-2xl font-semibold">Inbox</h1>
+          {[1, 2, 3, 4].map((s) => {
+            const Icon = SEVERITY_ICON[s];
+            const on = filter.severity === String(s);
+            return (
+              <button
+                key={s}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setFilter("severity", on ? "" : String(s))}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                  on ? "border-foreground bg-foreground text-background" : "border-line bg-panel text-muted hover:border-accent"
+                }`}
+              >
+                <Icon weight="fill" className="size-3.5" style={{ color: on ? undefined : `var(--sev${s})` }} />
+                {SEVERITY_LABEL[s]}
+                <span className="tabular-nums opacity-70">{open.filter((e) => e.severity === s).length}</span>
+              </button>
+            );
+          })}
+          <span className="ml-auto hidden items-center gap-1.5 text-xs text-faint xl:flex">
+            <kbd className="kbd">j</kbd>
+            <kbd className="kbd">k</kbd> move
+            <kbd className="kbd ml-2">e</kbd> resolve
+            <kbd className="kbd ml-2">a</kbd> assign
+            <kbd className="kbd ml-2">/</kbd> search
           </span>
+          <Link href="/inbox/triage" className="btn btn-primary ml-auto xl:ml-0">
+            <Lightning weight="fill" className="size-4" />
+            Triage
+          </Link>
         </div>
-        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-          <input
-            ref={searchRef}
-            className="field col-span-2 sm:col-span-1"
-            placeholder="Search"
-            defaultValue={filter.q}
-            onChange={(e) => setFilter("q", e.target.value)}
-          />
+
+        <div className="mt-3.5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-[minmax(0,1.4fr)_repeat(4,minmax(0,1fr))_auto]">
+          <label className="relative col-span-2 sm:col-span-1">
+            <MagnifyingGlass weight="bold" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-faint" />
+            <input
+              ref={searchRef}
+              className="field pl-9"
+              placeholder="Search exceptions"
+              aria-label="Search exceptions"
+              defaultValue={filter.q}
+              onChange={(e) => setFilter("q", e.target.value)}
+            />
+          </label>
           <Select value={filter.status} onChange={(v) => setFilter("status", v === "open" ? "" : v)} label="Status">
             <option value="open">Open</option>
             <option value="resolved">Resolved</option>
@@ -172,13 +208,13 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
           </button>
         </div>
         {views.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
             {views.map((v) => (
               <span key={v.id} className="chip">
-                <button type="button" className="hover:text-foreground" onClick={() => router.replace(`/?${v.query}`)}>
+                <button type="button" className="hover:text-foreground" onClick={() => router.replace(`/inbox?${v.query}`)}>
                   {v.name}
                 </button>
-                <button type="button" aria-label={`Delete view ${v.name}`} onClick={() => run(() => deleteView(v.id))}>
+                <button type="button" aria-label={`Delete view ${v.name}`} className="hover:text-danger" onClick={() => run(() => deleteView(v.id))}>
                   ×
                 </button>
               </span>
@@ -189,39 +225,57 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
       </div>
 
       <div className="flex min-h-0 flex-1">
-        <ul className={`min-w-0 flex-1 overflow-y-auto ${showDetail ? "hidden md:block" : ""}`}>
+        <ul className={`min-w-0 flex-1 overflow-y-auto pb-24 md:pb-4 ${showDetail ? "hidden md:block" : ""}`}>
           {visible.length === 0 && (
-            <li className="px-4 py-10 text-center text-sm text-muted">Nothing matches these filters.</li>
-          )}
-          {visible.map((e) => (
-            <li key={e.id} data-exception={e.id}>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedId(e.id);
-                  setShowDetail(true);
-                }}
-                className={`flex w-full gap-2.5 border-b border-line px-4 py-2.5 text-left transition hover:bg-panel ${
-                  selected?.id === e.id ? "bg-panel md:border-l-2 md:border-l-accent" : ""
-                } ${e.status !== "open" ? "opacity-60" : ""}`}
-              >
-                <SeverityDot severity={e.severity} />
-                <span className="min-w-0 flex-1">
-                  <span className="block text-sm">{e.title}</span>
-                  <span className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-muted">
-                    <span>{AREA_LABEL[e.area]}</span>
-                    {e.due_date && <span>Due {formatShort(e.due_date)}</span>}
-                    <span>{e.assignee ?? "Unassigned"}</span>
-                    {e.status !== "open" && <span className="capitalize">{e.status}</span>}
-                  </span>
-                </span>
-              </button>
+            <li>
+              {filtered || filter.status !== "open" ? (
+                <p className="px-4 py-14 text-center text-sm text-muted">Nothing matches these filters.</p>
+              ) : (
+                <AllClear title="Inbox zero">Every exception is resolved. The portfolio is clear for Day One.</AllClear>
+              )}
             </li>
-          ))}
+          )}
+          {visible.map((e) => {
+            const AreaIcon = AREA_ICON[e.area];
+            const isSelected = selected?.id === e.id;
+            return (
+              <li key={e.id} data-exception={e.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedId(e.id);
+                    setShowDetail(true);
+                  }}
+                  className={`flex w-full items-start gap-3.5 border-b border-line py-3.5 pr-4 pl-4 text-left transition md:pl-8 ${
+                    isSelected ? "bg-panel shadow-[inset_3px_0_0_var(--accent)]" : "hover:bg-panel/70"
+                  } ${e.status !== "open" ? "opacity-60" : ""}`}
+                >
+                  <SeverityMark severity={e.severity} className="mt-0.5 size-5.5" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm leading-snug font-medium">{e.title}</span>
+                    <span className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+                      <span className="inline-flex items-center gap-1.5">
+                        <AreaIcon weight="duotone" className="size-4 text-indigo" />
+                        {AREA_LABEL[e.area]}
+                      </span>
+                      {e.due_date && (
+                        <span className="inline-flex items-center gap-1.5">
+                          <CalendarBlank weight="duotone" className="size-4" />
+                          {formatShort(e.due_date)}
+                        </span>
+                      )}
+                      <span className={e.assignee ? "" : "text-faint italic"}>{e.assignee ?? "Unassigned"}</span>
+                      {e.status !== "open" && <StatusTag status={e.status} />}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
 
         <section
-          className={`w-full overflow-y-auto border-line md:block md:w-[44%] md:max-w-xl md:border-l ${
+          className={`w-full overflow-y-auto border-line bg-panel pb-24 md:block md:w-[46%] md:max-w-2xl md:border-l md:pb-0 ${
             showDetail ? "block" : "hidden"
           }`}
         >
@@ -240,7 +294,7 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
               onBack={() => setShowDetail(false)}
             />
           ) : (
-            <p className="p-6 text-sm text-muted">Select an exception to see why it was flagged.</p>
+            <p className="p-8 text-sm text-muted">Select an exception to see why it was flagged.</p>
           )}
         </section>
       </div>
@@ -293,32 +347,49 @@ function Detail({
   const [reason, setReason] = useState("");
   const [dismissing, setDismissing] = useState(false);
 
+  const FunctionIcon = e.function ? FUNCTION_ICON[e.function] : undefined;
+
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <button type="button" onClick={onBack} className="self-start text-sm text-muted md:hidden">
+    <div className="flex flex-col gap-6 p-5 md:p-7">
+      <button type="button" onClick={onBack} className="btn btn-quiet self-start md:hidden">
         ← Back to list
       </button>
       <div>
         <div className="flex flex-wrap items-center gap-2">
           <SeverityBadge severity={e.severity} />
-          <span className="chip">{AREA_LABEL[e.area]}</span>
-          {property && <span className="chip">{property}</span>}
-          {e.function && <span className="chip">{e.function}</span>}
-          {e.due_date && <span className="chip">Due {formatShort(e.due_date)}</span>}
+          <AreaTag area={e.area} />
+          {property && (
+            <span className="chip">
+              <Buildings weight="duotone" className="size-4 text-indigo" />
+              {property}
+            </span>
+          )}
+          {e.function && (
+            <span className="chip">
+              {FunctionIcon && <FunctionIcon weight="duotone" className="size-4 text-indigo" />}
+              {e.function}
+            </span>
+          )}
+          {e.due_date && (
+            <span className="chip">
+              <CalendarBlank weight="duotone" className="size-4 text-indigo" />
+              Due {formatShort(e.due_date)}
+            </span>
+          )}
         </div>
-        <h2 className="mt-2.5 text-base font-semibold leading-snug">{e.title}</h2>
+        <h2 className="display mt-3.5 text-xl leading-snug font-semibold">{e.title}</h2>
       </div>
 
-      <div>
-        <h3 className="text-xs font-medium uppercase tracking-wide text-muted">Why this was flagged</h3>
-        <p className="mt-1 text-sm leading-relaxed">{e.detail}</p>
-        <p className="mt-1 text-xs text-muted">Rule: {e.rule_key}</p>
+      <div className="rounded-2xl bg-panel2 p-4">
+        <h3 className="eyebrow">Why this was flagged</h3>
+        <p className="mt-2 text-sm leading-relaxed">{e.detail}</p>
+        <p className="mt-2.5 font-mono text-xs text-faint">rule: {e.rule_key}</p>
       </div>
 
       {e.sources.length > 0 && (
         <div>
-          <h3 className="text-xs font-medium uppercase tracking-wide text-muted">Source rows</h3>
-          <div className="mt-1.5 grid gap-1.5 sm:grid-cols-2">
+          <h3 className="eyebrow">Source rows</h3>
+          <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
             {e.sources.map((s) => (
               <SourceLink key={`${s.table}-${s.id}`} source={s} />
             ))}
@@ -326,12 +397,12 @@ function Detail({
         </div>
       )}
 
-      <div className="card flex flex-col gap-3 p-3">
-        <label className="text-xs text-muted">
+      <div className="flex flex-col gap-3.5 rounded-2xl border border-line p-4">
+        <label className="text-xs font-medium text-muted">
           Assignee
           <select
             ref={assignRef}
-            className="field mt-1"
+            className="field mt-1.5"
             value={e.assignee ?? ""}
             disabled={pending}
             onChange={(ev) => run(() => updateException(e.id, { assignee: ev.target.value || null }))}
@@ -355,6 +426,7 @@ function Detail({
                 run(() => updateException(e.id, { status: "resolved", resolution_note: `Resolved by ${me}.` }))
               }
             >
+              <CheckCircle weight="fill" className="size-4" />
               Resolve
             </button>
             <button type="button" className="btn" disabled={pending} onClick={() => setDismissing((v) => !v)}>
@@ -363,11 +435,9 @@ function Detail({
             <DraftButton exceptionId={e.id} />
           </div>
         ) : (
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="capitalize text-muted">
-              {e.status}
-              {e.resolution_note ? `: ${e.resolution_note}` : ""}
-            </span>
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <StatusTag status={e.status} />
+            {e.resolution_note && <span className="text-muted">{e.resolution_note}</span>}
             <button
               type="button"
               className="btn"
@@ -400,16 +470,16 @@ function Detail({
       </div>
 
       <div>
-        <h3 className="text-xs font-medium uppercase tracking-wide text-muted">Notes</h3>
+        <h3 className="eyebrow">Notes</h3>
         {e.notes.map((n, i) => (
-          <p key={i} className="mt-1.5 text-sm">
+          <p key={i} className="mt-2.5 rounded-xl bg-panel2 px-3.5 py-2.5 text-sm">
             {n.text}
-            <span className="block text-xs text-muted">
+            <span className="mt-1 block text-xs text-muted">
               {n.by}, {new Date(n.at).toLocaleString()}
             </span>
           </p>
         ))}
-        <div className="mt-2 flex gap-2">
+        <div className="mt-2.5 flex gap-2">
           <input
             className="field"
             placeholder="Add a note"
@@ -432,12 +502,13 @@ function Detail({
 
       {audit.length > 0 && (
         <div>
-          <h3 className="text-xs font-medium uppercase tracking-wide text-muted">History</h3>
-          <ul className="mt-1.5 space-y-1 text-xs text-muted">
+          <h3 className="eyebrow">History</h3>
+          <ul className="mt-2.5 space-y-2 border-l-2 border-line pl-4 text-xs text-muted">
             {audit.map((a) => (
               <li key={a.id}>
-                {new Date(a.created_at).toLocaleString()} · {actors[a.actor_id ?? ""] ?? "System"} changed{" "}
+                <span className="font-medium text-foreground">{actors[a.actor_id ?? ""] ?? "System"}</span> changed{" "}
                 {Object.keys(a.after ?? {}).join(", ")}
+                <span className="block text-faint">{new Date(a.created_at).toLocaleString()}</span>
               </li>
             ))}
           </ul>

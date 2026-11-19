@@ -26,7 +26,7 @@ export default async function BriefPage({
         title="Morning brief"
         subtitle="What each assignee on the Asset team would get at the start of the day. Built by rules from the checklist, so it is the same every time for the same data."
       />
-      <div className="px-4 pb-10">
+      <div className="px-4 pb-10 md:px-8">
         <div className="mb-4 flex flex-wrap gap-1.5">
           {assignees.map((a) => (
             <Link key={a} href={`/brief?for=${encodeURIComponent(a)}`} className={`btn ${a === who ? "border-accent text-accent" : ""}`}>
@@ -34,7 +34,7 @@ export default async function BriefPage({
             </Link>
           ))}
         </div>
-        <article className="card max-w-3xl p-4">
+        <article className="card max-w-3xl p-5 md:p-7">
           <p className="text-xs text-muted">To: {who}</p>
           <h2 className="mt-1 font-medium">{subject}</h2>
           <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-relaxed">{body}</pre>

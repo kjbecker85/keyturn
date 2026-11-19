@@ -68,7 +68,7 @@ export function buildTools(data: Dataset, exceptions: ExceptionRow[], citations:
         total_matching: rows.length,
         showing: Math.min(rows.length, 120),
         exceptions: rows.slice(0, 120).map((e) => ({
-          ref: cite(`EX-${e.id}`, `/?status=all&focus=${e.id}`),
+          ref: cite(`EX-${e.id}`, `/inbox?status=all&focus=${e.id}`),
           severity: SEVERITY_LABEL[e.severity],
           area: AREA_LABEL[e.area],
           property: e.property_id ? propertyName.get(e.property_id) : "Portfolio-wide",

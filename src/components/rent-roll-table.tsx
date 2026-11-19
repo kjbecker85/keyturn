@@ -11,9 +11,9 @@ import { useAction, useFocusRow } from "./use-action";
 const money = (n: number | null) => (n === null ? "—" : `$${n.toLocaleString("en-US")}`);
 const REVIEW_COLOR: Record<string, string> = {
   unreviewed: "text-muted",
-  approved: "text-ok",
-  corrected: "text-sev3",
-  rejected: "text-sev1",
+  approved: "text-ok-ink",
+  corrected: "text-sev3-ink",
+  rejected: "text-sev1-ink",
 };
 
 export function RentRollTable({
@@ -37,14 +37,14 @@ export function RentRollTable({
   const flaggedCount = mine.filter((u) => flags[u.id]?.length).length;
 
   return (
-    <div className="px-4 pb-8">
+    <div className="px-4 pb-10 md:px-8">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         {properties.map((p) => (
           <button
             key={p.id}
             type="button"
             onClick={() => setProperty(p.id)}
-            className={`btn ${property === p.id ? "border-accent text-accent" : ""}`}
+            className={`btn ${property === p.id ? "border-accent bg-accent-soft text-accent-strong" : ""}`}
           >
             {p.name}
           </button>
@@ -60,19 +60,19 @@ export function RentRollTable({
       {error && <p className="mb-2 text-sm text-danger">{error}</p>}
 
       <div className="card overflow-x-auto">
-        <table className="w-full min-w-[860px] text-sm">
-          <thead className="text-left text-xs text-muted">
-            <tr className="border-b border-line">
-              <th className="px-3 py-2 font-medium">Unit</th>
-              <th className="px-3 py-2 font-medium">Status</th>
-              <th className="px-3 py-2 font-medium">Resident</th>
-              <th className="px-3 py-2 text-right font-medium">Market</th>
-              <th className="px-3 py-2 text-right font-medium">Lease rent</th>
-              <th className="px-3 py-2 font-medium">Lease</th>
-              <th className="px-3 py-2 text-right font-medium">Deposit</th>
-              <th className="px-3 py-2 text-right font-medium">Balance</th>
-              <th className="px-3 py-2 font-medium">Review</th>
-              <th className="px-3 py-2 font-medium" />
+        <table className="tbl w-full min-w-[860px] text-sm">
+          <thead>
+            <tr>
+              <th>Unit</th>
+              <th>Status</th>
+              <th>Resident</th>
+              <th className="!text-right">Market</th>
+              <th className="!text-right">Lease rent</th>
+              <th>Lease</th>
+              <th className="!text-right">Deposit</th>
+              <th className="!text-right">Balance</th>
+              <th>Review</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -81,26 +81,26 @@ export function RentRollTable({
             )}
             {rows.map((u) => (
               <Fragment key={u.id}>
-                <tr id={`row-${u.id}`} className={`border-b border-line ${focus === u.id ? "bg-accent/10" : ""}`}>
-                  <td className="px-3 py-2">
-                    <button type="button" className="hover:text-accent" onClick={() => setOpen(open === u.id ? null : u.id)}>
+                <tr id={`row-${u.id}`} className={focus === u.id ? "bg-accent-soft" : ""}>
+                  <td>
+                    <button type="button" className="hover:text-accent-strong" onClick={() => setOpen(open === u.id ? null : u.id)}>
                       {u.unit}
                     </button>
                     <span className="block text-xs text-muted">{u.floorplan} · {u.sqft} sf</span>
                   </td>
-                  <td className="px-3 py-2">{STATUS_LABEL[u.status]}</td>
-                  <td className="px-3 py-2">{u.resident_name ?? <span className="text-muted">—</span>}</td>
-                  <td className="px-3 py-2 text-right tabular-nums">{money(u.market_rent)}</td>
-                  <td className="px-3 py-2 text-right tabular-nums">{money(u.lease_rent)}</td>
-                  <td className="whitespace-nowrap px-3 py-2 text-xs">{u.lease_start ?? "—"} to {u.lease_end ?? "—"}</td>
-                  <td className="px-3 py-2 text-right tabular-nums">{money(u.deposit)}</td>
-                  <td className="px-3 py-2 text-right tabular-nums">{money(u.balance)}</td>
+                  <td>{STATUS_LABEL[u.status]}</td>
+                  <td>{u.resident_name ?? <span className="text-muted">—</span>}</td>
+                  <td className="text-right tabular-nums">{money(u.market_rent)}</td>
+                  <td className="text-right tabular-nums">{money(u.lease_rent)}</td>
+                  <td className="whitespace-nowrap text-xs">{u.lease_start ?? "—"} to {u.lease_end ?? "—"}</td>
+                  <td className="text-right tabular-nums">{money(u.deposit)}</td>
+                  <td className="text-right tabular-nums">{money(u.balance)}</td>
                   <td className={`px-3 py-2 capitalize ${REVIEW_COLOR[u.review_status]}`}>{u.review_status}</td>
-                  <td className="px-3 py-2"><FlagBadges flags={flags[u.id]} /></td>
+                  <td><FlagBadges flags={flags[u.id]} /></td>
                 </tr>
                 {open === u.id && (
-                  <tr className="border-b border-line bg-background/60">
-                    <td colSpan={10} className="px-3 py-3">
+                  <tr className="bg-panel2/60">
+                    <td colSpan={10} className="!py-4">
                       <UnitReview unit={u} flags={flags[u.id]} pending={pending} run={run} />
                     </td>
                   </tr>
@@ -158,7 +158,7 @@ function UnitReview({
   return (
     <div className="flex flex-col gap-3">
       {flags?.map((f) => (
-        <p key={f.id} className="text-sm text-sev2">{f.title}</p>
+        <p key={f.id} className="text-sm text-sev2-ink">{f.title}</p>
       ))}
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {FIELDS.map((f) => (

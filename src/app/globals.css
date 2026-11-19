@@ -1,87 +1,313 @@
 @import "tailwindcss";
 
+/* ---------- Tokens: light is the default, dark is a toggle ---------- */
 :root {
-  --background: #0b1220;
-  --foreground: #e6ebf5;
-  --panel: #121b2e;
-  --line: #24304a;
-  --muted: #8d9ab5;
-  --accent: #f2b544;
-  --danger: #f2777a;
+  --background: #f2f5f9;
+  --foreground: #0e1a2b;
+  --panel: #ffffff;
+  --panel2: #edf1f6;
+  --line: #dce3ec;
+  --muted: #56667c;
+  --faint: #8d9aad;
+
+  --accent: #0a8f86;
+  --accent-strong: #077168;
+  --accent-bright: #14cdb9;
+  --accent-soft: #dcf5f1;
+  --on-accent: #ffffff;
+  --indigo: #5464e8;
+  --indigo-soft: #e8ebff;
+
+  /* Each level has a fill (marks, dots), an ink (text) and a soft tint (backgrounds). */
+  --sev1: #e5386d;
+  --sev1-ink: #bf1d50;
+  --sev1-soft: #fde6ed;
+  --sev2: #f2743e;
+  --sev2-ink: #b94a17;
+  --sev2-soft: #fdede3;
+  --sev3: #edae1c;
+  --sev3-ink: #8a6205;
+  --sev3-soft: #fcf2d6;
+  --sev4: #8fa0b6;
+  --sev4-ink: #56667c;
+  --sev4-soft: #edf1f6;
+  --ok: #11a895;
+  --ok-ink: #087567;
+  --ok-soft: #dbf5f0;
+  --danger: #bf1d50;
+
+  --shadow-card: 0 1px 2px rgb(14 26 43 / 0.05), 0 6px 20px -6px rgb(14 26 43 / 0.1);
+  --shadow-pop: 0 4px 10px rgb(14 26 43 / 0.08), 0 18px 44px -10px rgb(14 26 43 / 0.24);
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2356667c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  --header-h: 3.75rem;
+}
+
+:root[data-theme="dark"] {
+  --background: #0b1320;
+  --foreground: #e7edf6;
+  --panel: #121d2d;
+  --panel2: #1a2739;
+  --line: #27364b;
+  --muted: #97a6ba;
+  --faint: #6c7c92;
+
+  --accent: #2fd4c1;
+  --accent-strong: #5fe3d3;
+  --accent-bright: #2fd4c1;
+  --accent-soft: #10353a;
+  --on-accent: #06211f;
+  --indigo: #8d99ff;
+  --indigo-soft: #1f2750;
+
+  --sev1: #f25c88;
+  --sev1-ink: #ff86a8;
+  --sev1-soft: #3a1626;
+  --sev2: #f58a5b;
+  --sev2-ink: #ffa47c;
+  --sev2-soft: #3a2114;
+  --sev3: #f0bb3d;
+  --sev3-ink: #f5cd6b;
+  --sev3-soft: #352a0e;
+  --sev4: #7f90a8;
+  --sev4-ink: #a9b6c8;
+  --sev4-soft: #1a2739;
+  --ok: #2fc9b3;
+  --ok-ink: #5fe0cd;
+  --ok-soft: #0f3330;
+  --danger: #ff86a8;
+
+  --shadow-card: 0 0 0 1px #27364b;
+  --shadow-pop: 0 0 0 1px #33455e, 0 18px 44px -10px rgb(0 0 0 / 0.6);
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2397a6ba' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-panel: var(--panel);
+  --color-panel2: var(--panel2);
   --color-line: var(--line);
   --color-muted: var(--muted);
+  --color-faint: var(--faint);
   --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-indigo: var(--indigo);
+  --color-indigo-soft: var(--indigo-soft);
+  --color-sev1: var(--sev1);
+  --color-sev1-ink: var(--sev1-ink);
+  --color-sev1-soft: var(--sev1-soft);
+  --color-sev2: var(--sev2);
+  --color-sev2-ink: var(--sev2-ink);
+  --color-sev2-soft: var(--sev2-soft);
+  --color-sev3: var(--sev3);
+  --color-sev3-ink: var(--sev3-ink);
+  --color-sev3-soft: var(--sev3-soft);
+  --color-sev4: var(--sev4);
+  --color-sev4-ink: var(--sev4-ink);
+  --color-sev4-soft: var(--sev4-soft);
+  --color-ok: var(--ok);
+  --color-ok-ink: var(--ok-ink);
+  --color-ok-soft: var(--ok-soft);
   --color-danger: var(--danger);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+}
+
+/* Type scale: everything is rem-based, so the root size sets the density. */
+html {
+  font-size: 16.5px;
+  color-scheme: light;
+}
+html[data-density="compact"] {
+  font-size: 14.5px;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-:root {
-  --sev1: #f2777a;
-  --sev2: #f59e5b;
-  --sev3: #e8c85a;
-  --sev4: #8d9ab5;
-  --ok: #5ccf9a;
-  --panel2: #18233a;
+::selection {
+  background: var(--accent-soft);
 }
 
-@theme inline {
-  --color-sev1: var(--sev1);
-  --color-sev2: var(--sev2);
-  --color-sev3: var(--sev3);
-  --color-sev4: var(--sev4);
-  --color-ok: var(--ok);
-  --color-panel2: var(--panel2);
+/* ---------- Shared pieces ----------
+   In the components layer, so a utility class on an element can still override them. */
+@layer components {
+.card {
+  @apply rounded-2xl bg-panel shadow-card;
 }
 
-html {
-  color-scheme: dark;
-}
-
-/* Shared control styles */
 .btn {
-  @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-line bg-panel2 px-3 py-1.5 text-sm transition hover:border-accent disabled:opacity-50;
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-line bg-panel px-3.5 py-2 text-sm font-medium whitespace-nowrap text-foreground transition hover:border-accent hover:text-accent-strong disabled:cursor-not-allowed disabled:opacity-50;
 }
 .btn-primary {
-  @apply border-accent bg-accent font-medium text-background hover:brightness-110;
+  @apply border-accent bg-accent text-on-accent hover:border-accent-strong hover:bg-accent-strong hover:text-on-accent;
 }
-.field {
-  @apply w-full rounded-md border border-line bg-background px-2.5 py-1.5 text-sm outline-none focus:border-accent;
-}
-.chip {
-  @apply inline-flex items-center gap-1 rounded-full border border-line px-2 py-0.5 text-xs text-muted;
-}
-.card {
-  @apply rounded-lg border border-line bg-panel;
+.btn-quiet {
+  @apply border-transparent bg-transparent text-muted hover:border-transparent hover:bg-panel2 hover:text-foreground;
 }
 
+.field {
+  @apply w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm text-foreground outline-none transition placeholder:text-faint focus:border-accent focus:ring-3 focus:ring-accent-soft disabled:opacity-60;
+}
+/* Selects get their own arrow with room on the right, so it never touches the edge. */
+select.field {
+  appearance: none;
+  background-image: var(--chevron);
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1rem;
+  padding-right: 2.4rem;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.chip {
+  @apply inline-flex items-center gap-1.5 rounded-full bg-panel2 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-muted;
+}
+
+.eyebrow {
+  @apply text-xs font-semibold tracking-wider text-faint uppercase;
+}
+
+.display {
+  font-family: var(--font-display), var(--font-geist-sans), sans-serif;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
+.kbd {
+  @apply rounded-md border border-line bg-panel2 px-1.5 py-0.5 font-mono text-[0.7rem] text-muted;
+}
+
+.tbl th {
+  @apply px-4 py-3 text-left text-xs font-semibold tracking-wide whitespace-nowrap text-faint uppercase;
+}
+.tbl td {
+  @apply px-4 py-3 align-top;
+}
+.tbl tbody tr {
+  @apply border-t border-line;
+}
+
+}
+
+/* ---------- Motion ---------- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: fade-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse-ring 1.6s ease-out infinite;
+}
+
+@keyframes sweep {
+  from {
+    stroke-dashoffset: var(--from);
+  }
+}
+.sweep {
+  animation: sweep 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 150ms);
+}
+
+@keyframes key-turn {
+  0%,
+  20% {
+    transform: rotate(0deg);
+  }
+  55%,
+  100% {
+    transform: rotate(90deg);
+  }
+}
+@keyframes unlock-glow {
+  0%,
+  45% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+.key-turn {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: key-turn 2.4s cubic-bezier(0.3, 0.8, 0.3, 1) infinite alternate;
+}
+.unlock-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: unlock-glow 2.4s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .pulse,
+  .sweep,
+  .key-turn,
+  .unlock-glow {
+    animation: none;
+  }
+}
+
+/* ---------- Map ---------- */
 .keyturn-pin {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 9999px;
-  border: 2px solid #0b1220;
-  color: #0b1220;
-  font-size: 12px;
-  font-weight: 700;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.5);
+  filter: drop-shadow(0 3px 6px rgb(14 26 43 / 0.28));
+  transition: transform 0.15s ease;
 }
+.keyturn-pin:hover,
 .keyturn-pin[data-selected="true"] {
-  outline: 3px solid #e6ebf5;
+  transform: scale(1.18);
+  z-index: 5;
 }
 .maplibregl-ctrl-attrib {
   font-size: 10px;

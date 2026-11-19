@@ -47,20 +47,20 @@ export default async function AboutPage() {
   return (
     <>
       <PageHeader title="Assumptions and limits" subtitle="What this prototype assumes, what it found, and what it deliberately leaves out." />
-      <div className="grid gap-4 px-4 pb-10 lg:grid-cols-2">
-        <section className="card p-4">
-          <h2 className="font-medium">Assumptions</h2>
+      <div className="grid grid-cols-1 gap-5 px-4 pb-10 md:px-8 lg:grid-cols-2">
+        <section className="card p-5 md:p-6">
+          <h2 className="text-base font-semibold">Assumptions</h2>
           <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
             {ASSUMPTIONS.map((a) => <li key={a}>{a}</li>)}
           </ul>
         </section>
 
-        <section className="card p-4">
-          <h2 className="font-medium">Deliberately not built</h2>
+        <section className="card p-5 md:p-6">
+          <h2 className="text-base font-semibold">Deliberately not built</h2>
           <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
             {NOT_BUILT.map((a) => <li key={a}>{a}</li>)}
           </ul>
-          <h2 className="mt-5 font-medium">What the prior manager&apos;s export looked like</h2>
+          <h2 className="mt-6 text-base font-semibold">What the prior manager&apos;s export looked like</h2>
           <dl className="mt-2 space-y-1.5 text-sm">
             <div><dt className="inline text-muted">Unit numbers: </dt><dd className="inline">{[...formats.unit].join(", ")}</dd></div>
             <div><dt className="inline text-muted">Status spellings ({formats.status.size}): </dt><dd className="inline">{[...formats.status].join(", ")}</dd></div>
@@ -73,8 +73,8 @@ export default async function AboutPage() {
           {user.role === "director" && <div className="mt-4"><ResetButton /></div>}
         </section>
 
-        <section className="card p-4 lg:col-span-2">
-          <h2 className="font-medium">Rules and what they caught</h2>
+        <section className="card p-5 md:p-6 lg:col-span-2">
+          <h2 className="text-base font-semibold">Rules and what they caught</h2>
           <p className="mt-1 text-sm text-muted">
             {RULES.length} rules, no model. Counts are live and change as records are edited.
           </p>

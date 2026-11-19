@@ -17,6 +17,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.10.0",
+    "@nivo/core": "^0.99.0",
+    "@nivo/sunburst": "^0.99.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.1",
     "cmdk": "^1.1.1",

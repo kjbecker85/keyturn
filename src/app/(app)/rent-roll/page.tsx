@@ -14,7 +14,7 @@ export default async function RentRollPage() {
         title="Rent roll intake"
         subtitle={`${data.units.length} units from the prior manager, normalized. Each row keeps its raw cells. Review the flagged rows before anything loads into Yardi.`}
       />
-      <p className="mx-4 mb-3 rounded-md border border-sev2/40 px-3 py-2 text-sm text-sev2">
+      <p className="mx-4 mb-4 rounded-xl bg-sev2-soft px-4 py-3 text-sm text-sev2-ink md:mx-8">
         No rent roll received for {missing.length} of {data.properties.length} properties:{" "}
         {missing.map((p) => p.name).join(", ")}.
       </p>

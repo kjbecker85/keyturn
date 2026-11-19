@@ -26,6 +26,18 @@ How Keyturn was built, in order, including the mistakes. Built with Claude Code
 | P5 | Assistant and drafting | No Claude key was available overnight. On Nov 19 the assistant was run against the live API with 10 questions (`npm run ask-check`): every citation matched a record it had looked up, and it said so when the data could not answer. One answer warned it had seen only 60 of 117 tasks, so the row limits were raised. |
 | P6 | Holiday rule, morning brief | Weather, Census and flood overlays were cut. Dec 1 was outside any forecast window on Oct 16. |
 
+## Nov 19: redesign
+
+Kyle's review of the first version: too dark, too dense, no charts, nothing distinctive. The second pass:
+
+- Light theme by default with a cool slate and teal palette, a dark toggle, and larger text with a compact option.
+- An overview dashboard as the home screen. The runway timeline is the signature chart: one lane per property, every deadline as a mark, Thanksgiving shaded, missed notice windows in a gutter left of today.
+- Phosphor duotone icons for areas, severities, statuses and functions. Severity is always an icon and a word, not color alone.
+- Triage mode, Day One pass cards, and a key-turn animation for all-clear states.
+- "Money at stake" was planned as a waterfall. Monthly amounts and a one-time balance don't add up to one number, so it is two groups of bars instead.
+- The checklist heatmap was planned in Nivo. It is hand-built so the columns can carry function icons and fit a phone. Nivo draws the sunburst.
+- Found while testing: shared button and field styles were overriding per-element tweaks until they were moved into the CSS components layer, and dashboard grids overflowed sideways on a phone until given an explicit single column.
+
 ## What was checked, and how
 
 - 56 unit tests: every messy format in the rent roll, rule counts against the independent Python profile, rules reacting to edits, and the assistant's query tools.

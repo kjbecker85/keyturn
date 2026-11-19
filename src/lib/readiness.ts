@@ -23,7 +23,10 @@ export type Readiness = {
 };
 
 export const LEVEL_LABEL = { on_track: "On track", at_risk: "At risk", off_track: "Off track" };
-export const LEVEL_COLOR = { on_track: "#5ccf9a", at_risk: "#e8c85a", off_track: "#f2777a" };
+// CSS color tokens, so the same level looks right in light and dark.
+export const LEVEL_COLOR = { on_track: "var(--ok)", at_risk: "var(--sev3)", off_track: "var(--sev1)" };
+export const LEVEL_INK = { on_track: "var(--ok-ink)", at_risk: "var(--sev3-ink)", off_track: "var(--sev1-ink)" };
+export const LEVEL_SOFT = { on_track: "var(--ok-soft)", at_risk: "var(--sev3-soft)", off_track: "var(--sev1-soft)" };
 
 export function readiness(properties: Property[], tasks: Task[], exceptions: ExceptionRow[]): Readiness[] {
   return properties.map((property) => {

@@ -33,17 +33,17 @@ export function DraftsList({ drafts }: { drafts: DraftRow[] }) {
     return <p className="px-4 text-sm text-muted">No drafts yet. Open an exception and choose Draft escalation.</p>;
   }
   return (
-    <div className="grid gap-3 px-4 pb-10">
+    <div className="grid gap-3 px-4 pb-10 md:px-8">
       {drafts.map((d) => (
         <article key={d.id} id={`row-${d.id}`} className="card">
           <button
             type="button"
-            className="flex w-full flex-wrap items-center gap-2 px-4 py-3 text-left"
+            className="flex w-full flex-wrap items-center gap-3 px-5 py-4 text-left"
             onClick={() => setOpenId(openId === d.id ? null : d.id)}
           >
             <span className="chip">{KIND[d.kind] ?? d.kind}</span>
-            <span className="min-w-0 flex-1 truncate text-sm">{d.subject}</span>
-            <span className={`text-xs ${d.status === "sent" ? "text-ok" : "text-muted"}`}>
+            <span className="min-w-0 flex-1 truncate text-sm font-medium">{d.subject}</span>
+            <span className={`text-xs ${d.status === "sent" ? "text-ok-ink" : "text-muted"}`}>
               {d.status === "sent" ? `Sent ${new Date(d.sent_at!).toLocaleString()}` : "Draft"}
             </span>
           </button>
@@ -62,14 +62,14 @@ function Editor({ d }: { d: DraftRow }) {
   const sent = d.status === "sent";
 
   return (
-    <div className="flex flex-col gap-3 border-t border-line px-4 py-3">
-      <label className="text-xs text-muted">
+    <div className="flex flex-col gap-4 border-t border-line px-5 py-5">
+      <label className="text-xs font-medium text-muted">
         To
-        <input className="field mt-1" value={recipient} disabled={sent} onChange={(e) => setRecipient(e.target.value)} />
+        <input className="field mt-1.5" value={recipient} disabled={sent} onChange={(e) => setRecipient(e.target.value)} />
       </label>
-      <label className="text-xs text-muted">
+      <label className="text-xs font-medium text-muted">
         Subject
-        <input className="field mt-1" value={subject} disabled={sent} onChange={(e) => setSubject(e.target.value)} />
+        <input className="field mt-1.5" value={subject} disabled={sent} onChange={(e) => setSubject(e.target.value)} />
       </label>
       <textarea
         className="field min-h-64 font-sans leading-relaxed"

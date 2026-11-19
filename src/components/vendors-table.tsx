@@ -34,7 +34,7 @@ export function VendorsTable({
   );
 
   return (
-    <div className="px-4 pb-8">
+    <div className="px-4 pb-10 md:px-8">
       <div className="mb-3 grid grid-cols-2 gap-2 sm:max-w-md">
         <select className="field" aria-label="Property" value={property} onChange={(e) => setProperty(e.target.value)}>
           <option value="">All properties</option>
@@ -49,17 +49,17 @@ export function VendorsTable({
       {error && <p className="mb-2 text-sm text-danger">{error}</p>}
 
       <div className="card overflow-x-auto">
-        <table className="w-full min-w-[820px] text-sm">
-          <thead className="text-left text-xs text-muted">
-            <tr className="border-b border-line">
-              <th className="px-3 py-2 font-medium">Contract</th>
-              <th className="px-3 py-2 font-medium">Property</th>
-              <th className="px-3 py-2 text-right font-medium">Monthly</th>
-              <th className="px-3 py-2 font-medium">Term end</th>
-              <th className="px-3 py-2 font-medium">Notice by</th>
-              <th className="px-3 py-2 font-medium">COI</th>
-              <th className="px-3 py-2 font-medium">Decision</th>
-              <th className="px-3 py-2 font-medium" />
+        <table className="tbl w-full min-w-[820px] text-sm">
+          <thead>
+            <tr>
+              <th>Contract</th>
+              <th>Property</th>
+              <th className="!text-right">Monthly</th>
+              <th>Term end</th>
+              <th>Notice by</th>
+              <th>COI</th>
+              <th>Decision</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -67,9 +67,9 @@ export function VendorsTable({
               const deadline = noticeDeadline(c);
               return (
                 <Fragment key={c.id}>
-                  <tr id={`row-${c.id}`} className={`border-b border-line ${focus === c.id ? "bg-accent/10" : ""}`}>
-                    <td className="px-3 py-2">
-                      <button type="button" className="text-left hover:text-accent" onClick={() => setOpen(open === c.id ? null : c.id)}>
+                  <tr id={`row-${c.id}`} className={focus === c.id ? "bg-accent-soft" : ""}>
+                    <td>
+                      <button type="button" className="text-left hover:text-accent-strong" onClick={() => setOpen(open === c.id ? null : c.id)}>
                         {c.vendor}
                       </button>
                       <span className="block text-xs text-muted">
@@ -77,25 +77,25 @@ export function VendorsTable({
                         {c.assignable ? "" : " · not assignable"}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-muted">{name.get(c.property_id)}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{c.monthly_cost ? usd(c.monthly_cost) : "Rev share"}</td>
-                    <td className={`whitespace-nowrap px-3 py-2 ${c.term_end < TAKEOVER ? "text-sev2" : ""}`}>
+                    <td className="text-muted">{name.get(c.property_id)}</td>
+                    <td className="text-right tabular-nums">{c.monthly_cost ? usd(c.monthly_cost) : "Rev share"}</td>
+                    <td className={`whitespace-nowrap ${c.term_end < TAKEOVER ? "text-sev2-ink" : ""}`}>
                       {formatShort(c.term_end)}
                       <span className="block text-xs text-muted">{c.auto_renew ? "auto-renews" : "no auto-renew"}</span>
                     </td>
-                    <td className={`whitespace-nowrap px-3 py-2 ${c.auto_renew && deadline < TODAY ? "text-sev1" : ""}`}>
+                    <td className={`whitespace-nowrap ${c.auto_renew && deadline < TODAY ? "text-sev1-ink" : ""}`}>
                       {formatShort(deadline)}
                       <span className="block text-xs text-muted">{c.notice_days} days</span>
                     </td>
-                    <td className={`whitespace-nowrap px-3 py-2 ${c.coi_expiration < TODAY ? "text-sev1" : ""}`}>
+                    <td className={`whitespace-nowrap ${c.coi_expiration < TODAY ? "text-sev1-ink" : ""}`}>
                       {formatShort(c.coi_expiration)}
                     </td>
-                    <td className="px-3 py-2 capitalize">{c.decision ?? <span className="text-muted">None</span>}</td>
-                    <td className="px-3 py-2"><FlagBadges flags={flags[c.id]} /></td>
+                    <td className="capitalize">{c.decision ?? <span className="text-muted">None</span>}</td>
+                    <td><FlagBadges flags={flags[c.id]} /></td>
                   </tr>
                   {open === c.id && (
-                    <tr className="border-b border-line bg-background/60">
-                      <td colSpan={8} className="px-3 py-3">
+                    <tr className="bg-panel2/60">
+                      <td colSpan={8} className="!py-4">
                         <DecisionEditor contract={c} flags={flags[c.id]} pending={pending} run={run} />
                       </td>
                     </tr>
@@ -130,7 +130,7 @@ function DecisionEditor({
   return (
     <div className="flex flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-[10rem_1fr_10rem_auto] sm:items-end">
-        <label className="text-xs text-muted">
+        <label className="text-xs font-medium text-muted">
           Decision
           <select className="field mt-1" value={decision} onChange={(e) => setDecision(e.target.value)}>
             <option value="">None</option>

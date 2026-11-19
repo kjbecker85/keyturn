@@ -30,10 +30,10 @@ export default async function ActivityPage() {
         title="Activity"
         subtitle="Every edit, with who made it and the before and after. The database writes these rows itself, so no change can skip the log."
       />
-      <ul className="mx-4 mb-10 divide-y divide-line rounded-lg border border-line bg-panel">
+      <ul className="card mx-4 mb-10 divide-y divide-line overflow-hidden md:mx-8">
         {rows.length === 0 && <li className="px-4 py-6 text-sm text-muted">No edits yet.</li>}
         {rows.map((a) => (
-          <li key={a.id} className="px-4 py-2.5 text-sm">
+          <li key={a.id} className="px-5 py-3 text-sm">
             <span className="text-muted">{new Date(a.created_at).toLocaleString()}</span>{" "}
             <span className="font-medium">{actor[a.actor_id ?? ""] ?? "System"}</span>{" "}
             {a.action === "create" ? "created" : "changed"} {ENTITY[a.entity] ?? a.entity} #{a.entity_id}

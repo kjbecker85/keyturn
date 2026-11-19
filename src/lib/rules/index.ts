@@ -30,6 +30,9 @@ const LIFE_SAFETY = ["Fire/Life Safety", "Elevator Maintenance", "Gate/Access Co
 export const usd = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
+/** Ends a note with a period if its author didn't. */
+const sentence = (text: string) => (/[.!?]$/.test(text.trim()) ? text.trim() : `${text.trim()}.`);
+
 const isOccupied = (u: Unit) => u.status === "occupied" || u.status === "notice";
 
 const unitRef = (u: Unit): SourceRef => ({
@@ -281,7 +284,7 @@ function checklistRules({ tasks }: Dataset, name: Names, add: Add) {
         function: t.function,
         due_date: t.due_date,
         title: `Blocked — ${where}`,
-        detail: `${t.notes ?? "No reason recorded."} Due ${formatShort(t.due_date)}, owned by ${t.assignee ?? "nobody"}.${critical}`,
+        detail: `${sentence(t.notes ?? "No reason recorded")} Due ${formatShort(t.due_date)}, owned by ${t.assignee ?? "nobody"}.${critical}`,
         sources: [taskRef(t)],
       });
     }

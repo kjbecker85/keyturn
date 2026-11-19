@@ -16,7 +16,7 @@ export default async function DraftsPage() {
         <OwnerReportButton propertyId={null} />
       </PageHeader>
       {!aiEnabled() && (
-        <p className="mx-4 mb-3 rounded-md border border-sev3/40 px-3 py-2 text-sm text-sev3">
+        <p className="mx-4 mb-4 rounded-xl bg-sev3-soft px-4 py-3 text-sm text-sev3-ink md:mx-8">
           No Claude API key is configured, so drafts use a plain template and say so.
         </p>
       )}
