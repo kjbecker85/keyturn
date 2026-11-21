@@ -91,7 +91,7 @@ The same list is in the app under Assumptions.
 ## What it does not do
 
 - **No machine learning.** One snapshot of 126 tasks is not enough to train on, so readiness is a score you can check by hand.
-- **No file upload.** It runs on the data pack. A real intake tool would accept the next prior manager's export.
+- **Rent roll upload only.** The director can upload a property's rent roll as CSV or Excel (added Nov 20, after the video). The checklist and vendor contracts still come from the data pack.
 - **No email sending and no Yardi connection.** Drafts are logged as sent. The rent roll export is a clean CSV in a placeholder layout, because Yardi's import template has to come from Asset's Yardi team.
 - **No real sign-in.** Demo roles need no password. That is only acceptable because the data is synthetic.
 - **No weather, Census or flood overlays.** December 1 was outside any forecast window on October 16.
@@ -138,7 +138,7 @@ npm test                     # 56 tests: normalization, rules, assistant tools
 - The rules are pure functions over typed rows, with tests. They can move into a service or a Yardi-side job without the UI.
 - The assistant can only call five read-only functions. Adding a capability means adding a function, which keeps what it can reach reviewable.
 - Usage is measurable from the audit log: who resolved what, how long exceptions stay open, which rules get dismissed as noise.
-- Before production it needs real sign-in with role-based access, the Yardi import layout, an upload path for new rent rolls, and outbound email.
+- Before production it needs real sign-in with role-based access, the Yardi import layout, upload for checklists and contracts, and outbound email.
 
 ## Tools used
 

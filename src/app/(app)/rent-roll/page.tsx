@@ -1,10 +1,13 @@
 import { RentRollTable } from "@/components/rent-roll-table";
+import Link from "next/link";
 import { PageHeader } from "@/components/ui";
+import { getUser } from "@/lib/auth";
 import { loadDataset, loadExceptions } from "@/lib/data/store";
 import { flagsFor } from "@/lib/flags";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function RentRollPage() {
+  const user = await getUser();
   const db = await createClient();
   const [data, exceptions] = await Promise.all([loadDataset(db), loadExceptions(db)]);
   const missing = data.properties.filter((p) => !p.rent_roll_received);
@@ -13,11 +16,19 @@ export default async function RentRollPage() {
       <PageHeader
         title="Rent roll intake"
         subtitle={`${data.units.length} units from the prior manager, normalized. Each row keeps its raw cells. Review the flagged rows before anything loads into Yardi.`}
-      />
+      >
+        {user.role === "director" && (
+          <Link href="/rent-roll/upload" className="btn btn-primary">
+            Upload a rent roll
+          </Link>
+        )}
+      </PageHeader>
+      {missing.length > 0 && (
       <p className="mx-4 mb-4 rounded-xl bg-sev2-soft px-4 py-3 text-sm text-sev2-ink md:mx-8">
         No rent roll received for {missing.length} of {data.properties.length} properties:{" "}
         {missing.map((p) => p.name).join(", ")}.
       </p>
+      )}
       <RentRollTable
         units={data.units}
         properties={data.properties.filter((p) => p.rent_roll_received)}

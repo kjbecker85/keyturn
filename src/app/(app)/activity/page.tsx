@@ -8,6 +8,7 @@ const ENTITY: Record<string, string> = {
   rent_roll_units: "Rent roll unit",
   exceptions: "Exception",
   drafts: "Draft",
+  properties: "Property",
 };
 
 const show = (v: unknown) => {
@@ -21,6 +22,8 @@ export default async function ActivityPage() {
     db.from("audit_log").select("*").order("created_at", { ascending: false }).limit(200),
     db.from("profiles").select("id, full_name"),
   ]);
+  const { data: properties } = await db.from("properties").select("id, name");
+  const propertyName = Object.fromEntries((properties ?? []).map((p) => [String(p.id), p.name]));
   const actor = Object.fromEntries((profiles ?? []).map((p) => [p.id, p.full_name]));
   const rows = (audit ?? []) as AuditRow[];
 
@@ -36,7 +39,16 @@ export default async function ActivityPage() {
           <li key={a.id} className="px-5 py-3 text-sm">
             <span className="text-muted">{new Date(a.created_at).toLocaleString()}</span>{" "}
             <span className="font-medium">{actor[a.actor_id ?? ""] ?? "System"}</span>{" "}
-            {a.action === "create" ? "created" : "changed"} {ENTITY[a.entity] ?? a.entity} #{a.entity_id}
+            {a.action === "upload" ? (
+              <>
+                uploaded a rent roll for {propertyName[a.entity_id] ?? `property #${a.entity_id}`}: {show(a.after?.file ?? "")},{" "}
+                {show(a.after?.units ?? 0)} units{Number(a.after?.replaced ?? 0) > 0 && `, replacing ${show(a.after?.replaced)}`}
+              </>
+            ) : (
+              <>
+                {a.action === "create" ? "created" : "changed"} {ENTITY[a.entity] ?? a.entity} #{a.entity_id}
+              </>
+            )}
             {a.action === "update" && (
               <ul className="mt-1 space-y-0.5 text-xs text-muted">
                 {Object.keys(a.after ?? {}).map((key) => (

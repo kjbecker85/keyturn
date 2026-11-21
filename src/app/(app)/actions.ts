@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { getUser } from "@/lib/auth";
 import { resetDemo, syncExceptions } from "@/lib/data/store";
+import type { RawCell } from "@/lib/data/normalize";
+import { readRentRoll } from "@/lib/data/rent-roll-import";
 import { createClient } from "@/lib/supabase/server";
 
 export type Result = { ok: true } | { ok: false; error: string };
@@ -116,4 +118,46 @@ export async function resetDemoAction(): Promise<Result> {
   }
   revalidatePath("/", "layout");
   return { ok: true };
+}
+
+/**
+ * Loads a property's rent roll from an uploaded file. The rows are read again here,
+ * so nothing the browser previewed is trusted. Replaces that property's units,
+ * marks the rent roll received, logs the upload, and runs the rules again.
+ */
+export async function uploadRentRoll(
+  propertyId: number,
+  fileName: string,
+  headers: string[],
+  rows: RawCell[][],
+): Promise<Result & { units?: number }> {
+  const db = await createClient();
+  const user = await getUser();
+  if (user.role !== "director") return fail("Only the director can upload a rent roll.");
+  const { data: property } = await db.from("properties").select("id, name, pm_code").eq("id", propertyId).single();
+  if (!property) return fail("Unknown property.");
+
+  const read = readRentRoll(headers, rows, property);
+  if (read.error) return fail(read.error);
+
+  const { count: replaced } = await db
+    .from("rent_roll_units")
+    .delete({ count: "exact" })
+    .eq("property_id", propertyId);
+  const { error: insertError } = await db.from("rent_roll_units").insert(read.units).select("id");
+  if (insertError) return fail(insertError.message);
+  await db
+    .from("properties")
+    .update({ rent_roll_received: true, pm_code: read.pmCode ?? property.pm_code })
+    .eq("id", propertyId)
+    .select("id");
+  await db.rpc("log_rent_roll_upload", {
+    p_property: propertyId,
+    p_file: fileName.slice(0, 200),
+    p_units: read.units.length,
+    p_replaced: replaced ?? 0,
+  });
+  await syncExceptions(db);
+  revalidatePath("/", "layout");
+  return { ok: true, units: read.units.length };
 }

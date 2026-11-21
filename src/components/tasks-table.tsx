@@ -9,6 +9,9 @@ import type { Property, Task } from "@/lib/data/types";
 import { FlagBadges } from "./flag-badges";
 import { FUNCTION_ICON } from "./icons";
 import { useAction, useFocusRow } from "./use-action";
+import { ExportButtons } from "./export-buttons";
+import { toSheet } from "@/lib/table-export";
+import { taskColumns } from "@/lib/export-columns";
 
 const STATUSES = ["Not Started", "In Progress", "Blocked", "Complete"];
 const STATUS_COLOR: Record<string, string> = {
@@ -71,7 +74,10 @@ export function TasksTable({
         </select>
       </div>
       {error && <p className="mb-2 text-sm text-danger">{error}</p>}
-      <p className="mb-2 text-xs text-muted">{rows.length} tasks</p>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="text-xs text-muted">{rows.length} tasks</p>
+        <ExportButtons count={rows.length} sheet={() => toSheet("Checklist", taskColumns((id) => name.get(id) ?? "", flags), rows)} />
+      </div>
 
       <div className="card overflow-x-auto">
         <table className="tbl w-full min-w-[720px] text-sm">

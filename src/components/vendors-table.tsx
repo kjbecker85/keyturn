@@ -10,6 +10,9 @@ import type { Contract, Property } from "@/lib/data/types";
 import { noticeDeadline, usd } from "@/lib/rules";
 import { FlagBadges } from "./flag-badges";
 import { useAction, useFocusRow } from "./use-action";
+import { ExportButtons } from "./export-buttons";
+import { toSheet } from "@/lib/table-export";
+import { contractColumns } from "@/lib/export-columns";
 
 export function VendorsTable({
   contracts,
@@ -35,7 +38,8 @@ export function VendorsTable({
 
   return (
     <div className="px-4 pb-10 md:px-8">
-      <div className="mb-3 grid grid-cols-2 gap-2 sm:max-w-md">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <div className="grid w-full grid-cols-2 gap-2 sm:max-w-md">
         <select className="field" aria-label="Property" value={property} onChange={(e) => setProperty(e.target.value)}>
           <option value="">All properties</option>
           {properties.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -45,6 +49,8 @@ export function VendorsTable({
           <option value="flagged">Flagged only</option>
           <option value="undecided">No decision yet</option>
         </select>
+      </div>
+        <ExportButtons count={rows.length} sheet={() => toSheet("Vendor contracts", contractColumns((id) => name.get(id) ?? "", flags), rows)} />
       </div>
       {error && <p className="mb-2 text-sm text-danger">{error}</p>}
 

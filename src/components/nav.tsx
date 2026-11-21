@@ -35,6 +35,7 @@ export const NAV_GROUPS = [
     items: [
       { href: "/activity", label: "Activity" },
       { href: "/about", label: "Assumptions" },
+      { href: "/business-case", label: "Business case" },
     ],
   },
 ] as const;

@@ -6,7 +6,11 @@ import { STATUS_LABEL } from "@/lib/data/normalize";
 import type { Flag } from "@/lib/flags";
 import type { Property, Unit } from "@/lib/data/types";
 import { FlagBadges } from "./flag-badges";
+import { useSearchParams } from "next/navigation";
 import { useAction, useFocusRow } from "./use-action";
+import { ExportButtons } from "./export-buttons";
+import { toSheet } from "@/lib/table-export";
+import { unitColumns } from "@/lib/export-columns";
 
 const money = (n: number | null) => (n === null ? "—" : `$${n.toLocaleString("en-US")}`);
 const REVIEW_COLOR: Record<string, string> = {
@@ -28,7 +32,10 @@ export function RentRollTable({
   const { pending, error, run } = useAction();
   const focus = useFocusRow();
   const focused = units.find((u) => u.id === focus);
-  const [property, setProperty] = useState(focused?.property_id ?? properties[0]?.id ?? 0);
+  const asked = Number(useSearchParams().get("property"));
+  const [property, setProperty] = useState(
+    focused?.property_id ?? (properties.some((p) => p.id === asked) ? asked : (properties[0]?.id ?? 0)),
+  );
   const [flaggedOnly, setFlaggedOnly] = useState(!focus);
   const [open, setOpen] = useState<number | null>(focus);
 
@@ -53,6 +60,16 @@ export function RentRollTable({
           <input type="checkbox" checked={flaggedOnly} onChange={(e) => setFlaggedOnly(e.target.checked)} />
           Flagged rows only ({flaggedCount} of {mine.length})
         </label>
+        <ExportButtons
+          count={rows.length}
+          sheet={() =>
+            toSheet(
+              `Rent roll ${properties.find((p) => p.id === property)?.name ?? ""}`,
+              unitColumns((id) => properties.find((p) => p.id === id)?.name ?? "", flags),
+              rows,
+            )
+          }
+        />
         <a className="btn" href={`/api/export/rent-roll?property=${property}`}>
           Export for Yardi (CSV)
         </a>

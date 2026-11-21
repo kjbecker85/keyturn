@@ -13,6 +13,9 @@ import { formatShort } from "@/lib/dates";
 import { AREA_LABEL, SEVERITY_LABEL, type Area, type AuditRow, type ExceptionRow } from "@/lib/data/types";
 import Link from "next/link";
 import { AllClear } from "./all-clear";
+import { ExportButtons } from "./export-buttons";
+import { exceptionColumns } from "@/lib/export-columns";
+import { toSheet } from "@/lib/table-export";
 import { DraftButton } from "./draft-button";
 import {
   AREA_ICON,
@@ -147,7 +150,12 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
             <kbd className="kbd ml-2">a</kbd> assign
             <kbd className="kbd ml-2">/</kbd> search
           </span>
-          <Link href="/inbox/triage" className="btn btn-primary ml-auto xl:ml-0">
+          <ExportButtons
+            className="ml-auto xl:ml-0"
+            count={visible.length}
+            sheet={() => toSheet("Inbox", exceptionColumns((id) => (id === null ? "Portfolio" : (propertyName.get(id) ?? ""))), visible)}
+          />
+          <Link href="/inbox/triage" className="btn btn-primary">
             <Lightning weight="fill" className="size-4" />
             Triage
           </Link>

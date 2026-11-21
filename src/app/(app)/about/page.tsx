@@ -24,7 +24,7 @@ const ASSUMPTIONS = [
 
 const NOT_BUILT = [
   "Machine-learning forecasts. Readiness is arithmetic you can check, because one snapshot of 126 tasks is not enough to train on.",
-  "Uploading a new rent roll file. The app runs on the data pack only.",
+  "Uploading checklist or vendor files. Rent rolls can be uploaded, but the checklist and contracts come from the data pack only.",
   "Sending email, and any live Yardi connection.",
   "Weather, Census and flood overlays. Dec 1 is outside any forecast window on Oct 16, so a weather panel would have been decoration.",
   "Real sign-in. The demo roles need no password, which is wrong for anything but synthetic data.",
@@ -70,7 +70,10 @@ export default async function AboutPage() {
           <p className="mt-4 text-sm text-muted">
             AI features: {aiEnabled() ? "Claude is connected. The assistant and drafts cite the rows they used." : "no Claude key on this deployment, so the assistant is off and drafts use a labeled template."}
           </p>
-          {user.role === "director" && <div className="mt-4"><ResetButton /></div>}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a className="btn" href="/api/export/workbook">Download everything (Excel)</a>
+            {user.role === "director" && <ResetButton />}
+          </div>
         </section>
 
         <section className="card p-5 md:p-6 lg:col-span-2">

@@ -111,5 +111,6 @@ export const NAV_ICON: Record<string, Icon> = {
   "/brief": SunHorizon,
   "/activity": ClockCounterClockwise,
   "/about": Scales,
+  "/business-case": Calculator,
   "/more": Rows,
 };
