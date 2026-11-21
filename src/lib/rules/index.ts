@@ -22,10 +22,12 @@ import {
   type Unit,
 } from "../data/types";
 
+// shared
 export const STALE_DAYS = 7;
 export const BELOW_MARKET_PCT = 0.2;
 export const NOTICE_HORIZON = "2026-12-31";
 const LIFE_SAFETY = ["Fire/Life Safety", "Elevator Maintenance", "Gate/Access Control"];
+// end shared
 
 export const usd = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -33,7 +35,9 @@ export const usd = (n: number) =>
 /** Ends a note with a period if its author didn't. */
 const sentence = (text: string) => (/[.!?]$/.test(text.trim()) ? text.trim() : `${text.trim()}.`);
 
+// shared
 const isOccupied = (u: Unit) => u.status === "occupied" || u.status === "notice";
+// end shared
 
 const unitRef = (u: Unit): SourceRef => ({
   table: "rent_roll_units",
@@ -57,10 +61,12 @@ const contractRef = (c: Contract): SourceRef => ({
   label: `${c.contract_id} ${c.vendor}`,
 });
 
+// shared
 /** The last day notice can be given to stop a contract at its term end. */
 export function noticeDeadline(c: Contract): string {
   return addDays(c.term_end, -c.notice_days);
 }
+// end shared
 
 export function runRules(data: Dataset): ExceptionCandidate[] {
   const name = new Map(data.properties.map((p) => [p.id, p.name]));
@@ -90,6 +96,7 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
     const where = `${name.get(u.property_id)} unit ${u.unit}`;
     const key = `${u.property_id}:${u.source_row}`;
 
+    // rule: rr.no_resident
     if (isOccupied(u) && !u.resident_name) {
       add({
         ...base,
@@ -104,6 +111,8 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: [unitRef(u)],
       });
     }
+    // end rule
+    // rule: rr.zero_rent
     if (isOccupied(u) && u.lease_rent === 0) {
       add({
         ...base,
@@ -118,6 +127,8 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: [unitRef(u)],
       });
     }
+    // end rule
+    // rule: rr.dates_reversed
     if (u.lease_start && u.lease_end && u.lease_end < u.lease_start) {
       add({
         ...base,
@@ -132,6 +143,8 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: [unitRef(u)],
       });
     }
+    // end rule
+    // rule: rr.zero_sqft
     if (u.sqft === 0) {
       add({
         ...base,
@@ -144,6 +157,8 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: [unitRef(u)],
       });
     }
+    // end rule
+    // rule: rr.below_market
     if (
       isOccupied(u) &&
       u.lease_rent &&
@@ -165,6 +180,8 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: [unitRef(u)],
       });
     }
+    // end rule
+    // rule: rr.zero_deposit
     if (u.status === "occupied" && u.resident_name && u.deposit === 0) {
       add({
         ...base,
@@ -179,8 +196,10 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: [unitRef(u)],
       });
     }
+    // end rule
   }
 
+  // rule: rr.duplicate_unit
   // Duplicate unit numbers once "Apt 3203", "#3203" and "3203" are the same thing.
   const byUnit = new Map<string, Unit[]>();
   for (const u of units) {
@@ -204,8 +223,11 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
       sources: group.map(unitRef),
     });
   }
+  // end rule
 
+  const received = properties.filter((p) => units.some((u) => u.property_id === p.id)).length;
   for (const p of properties) {
+    // rule: rr.missing
     const mine = units.filter((u) => u.property_id === p.id);
     if (mine.length === 0) {
       const due = tasks.find(
@@ -220,13 +242,15 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         due_date: due?.due_date ?? null,
         title: `${p.name}: no rent roll received`,
         detail:
-          "The data pack holds rent rolls for 3 of the 9 properties. Nothing has arrived for this one, " +
+          `Rent rolls have arrived for ${received} of the ${properties.length} properties. Nothing has arrived for this one, ` +
           "so occupancy, deposits and delinquency can't be checked yet.",
         sources: due ? [taskRef(due)] : [],
       });
       continue;
     }
+    // end rule
 
+    // rule: rr.month_to_month
     const expired = mine.filter((u) => isOccupied(u) && u.lease_end && u.lease_end < TODAY);
     const occupied = mine.filter(isOccupied);
     if (expired.length) {
@@ -244,7 +268,9 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: expired.slice(0, 8).map(unitRef),
       });
     }
+    // end rule
 
+    // rule: rr.delinquency
     const owing = mine.filter((u) => (u.balance ?? 0) > 0);
     if (owing.length) {
       const total = owing.reduce((sum, u) => sum + (u.balance ?? 0), 0);
@@ -262,6 +288,7 @@ function rentRollRules({ properties, units, tasks }: Dataset, name: Names, add: 
         sources: top.map(unitRef),
       });
     }
+    // end rule
   }
 }
 
@@ -273,6 +300,7 @@ function checklistRules({ tasks }: Dataset, name: Names, add: Add) {
     const where = `${name.get(t.property_id)}: ${t.task}`;
     const critical = t.critical_path ? " It is on the critical path." : "";
 
+    // rule: task.blocked
     if (t.status === "Blocked") {
       add({
         ...base,
@@ -288,6 +316,8 @@ function checklistRules({ tasks }: Dataset, name: Names, add: Add) {
         sources: [taskRef(t)],
       });
     }
+    // end rule
+    // rule: task.unassigned
     if (!t.assignee) {
       add({
         ...base,
@@ -302,6 +332,8 @@ function checklistRules({ tasks }: Dataset, name: Names, add: Add) {
         sources: [taskRef(t)],
       });
     }
+    // end rule
+    // rule: task.overdue
     if (t.due_date < TODAY) {
       add({
         ...base,
@@ -317,6 +349,8 @@ function checklistRules({ tasks }: Dataset, name: Names, add: Add) {
         sources: [taskRef(t)],
       });
     }
+    // end rule
+    // rule: task.stale
     const idle = daysBetween(t.last_updated, TODAY);
     if (idle > STALE_DAYS && t.status !== "Blocked") {
       add({
@@ -333,8 +367,10 @@ function checklistRules({ tasks }: Dataset, name: Names, add: Add) {
         sources: [taskRef(t)],
       });
     }
+    // end rule
   }
 
+  // rule: task.non_business_due
   // Due dates that land on a weekend or holiday. The real deadline is earlier.
   const byTask = new Map<string, Task[]>();
   for (const t of open) {
@@ -372,6 +408,7 @@ function checklistRules({ tasks }: Dataset, name: Names, add: Add) {
       sources: group.map((g) => taskRef(g, `${name.get(g.property_id)}`)),
     });
   }
+  // end rule
 }
 
 function vendorRules({ properties, contracts }: Dataset, name: Names, add: Add) {
@@ -382,6 +419,7 @@ function vendorRules({ properties, contracts }: Dataset, name: Names, add: Add) 
     const deadline = noticeDeadline(c);
     const cost = c.monthly_cost ? `${usd(c.monthly_cost)} a month` : "revenue share, no monthly cost";
 
+    // rule: vendor.notice_missed vendor.notice_upcoming
     if (c.auto_renew && deadline < TODAY && c.term_end >= TODAY) {
       add({
         ...base,
@@ -413,7 +451,9 @@ function vendorRules({ properties, contracts }: Dataset, name: Names, add: Add) 
         sources: [contractRef(c)],
       });
     }
+    // end rule
 
+    // rule: vendor.lapses
     if (!c.auto_renew && c.term_end < TAKEOVER) {
       const lifeSafety = LIFE_SAFETY.includes(c.service);
       add({
@@ -432,7 +472,9 @@ function vendorRules({ properties, contracts }: Dataset, name: Names, add: Add) 
         sources: [contractRef(c)],
       });
     }
+    // end rule
 
+    // rule: vendor.coi_expired
     if (c.coi_expiration < TODAY) {
       add({
         ...base,
@@ -448,11 +490,13 @@ function vendorRules({ properties, contracts }: Dataset, name: Names, add: Add) 
         sources: [contractRef(c)],
       });
     }
+    // end rule
   }
 
   for (const p of properties) {
     const mine = contracts.filter((c) => c.property_id === p.id);
 
+    // rule: vendor.not_assignable
     const locked = mine.filter((c) => !c.assignable && c.term_end >= TAKEOVER);
     if (locked.length) {
       add({
@@ -469,7 +513,9 @@ function vendorRules({ properties, contracts }: Dataset, name: Names, add: Add) 
         sources: locked.map(contractRef),
       });
     }
+    // end rule
 
+    // rule: vendor.duplicate_service
     const byService = new Map<string, Contract[]>();
     for (const c of mine) byService.set(c.service, [...(byService.get(c.service) ?? []), c]);
     for (const [service, group] of byService) {
@@ -489,6 +535,7 @@ function vendorRules({ properties, contracts }: Dataset, name: Names, add: Add) 
         sources: group.map(contractRef),
       });
     }
+    // end rule
   }
 }
 
@@ -508,6 +555,7 @@ function crossSheetRules({ properties, units, tasks, contracts }: Dataset, name:
     const keys = find(p.id, "Keys, access control");
     const myUnits = units.filter((u) => u.property_id === p.id);
 
+    // rule: cross.contracts_exist
     if (review?.notes && /hasn.t sent contracts/i.test(review.notes) && mine.length) {
       add({
         ...base,
@@ -524,7 +572,9 @@ function crossSheetRules({ properties, units, tasks, contracts }: Dataset, name:
         sources: [taskRef(review), ...mine.map(contractRef)],
       });
     }
+    // end rule
 
+    // rule: cross.review_complete_with_issues
     const vendorIssues = mine.filter(
       (c) =>
         c.coi_expiration < TODAY ||
@@ -547,7 +597,9 @@ function crossSheetRules({ properties, units, tasks, contracts }: Dataset, name:
         sources: [taskRef(review), ...vendorIssues.map(contractRef)],
       });
     }
+    // end rule
 
+    // rule: cross.coi_task_complete
     const expiredCoi = mine.filter((c) => c.coi_expiration < TODAY);
     if (insurance?.status === "Complete" && expiredCoi.length) {
       add({
@@ -565,7 +617,9 @@ function crossSheetRules({ properties, units, tasks, contracts }: Dataset, name:
         sources: [taskRef(insurance), ...expiredCoi.map(contractRef)],
       });
     }
+    // end rule
 
+    // rule: cross.rent_roll_marked_received
     if (rentRoll?.status === "Complete" && myUnits.length === 0) {
       add({
         ...base,
@@ -581,7 +635,9 @@ function crossSheetRules({ properties, units, tasks, contracts }: Dataset, name:
         sources: [taskRef(rentRoll)],
       });
     }
+    // end rule
 
+    // rule: cross.loading_before_clean
     for (const systems of [yardi, ledgers]) {
       if (!systems || systems.status === "Not Started" || systems.status === "Blocked") continue;
       const dirty = myUnits.filter(
@@ -617,7 +673,9 @@ function crossSheetRules({ properties, units, tasks, contracts }: Dataset, name:
         });
       }
     }
+    // end rule
 
+    // rule: cross.access_handover
     const gate = mine.find(
       (c) => c.service === "Gate/Access Control" && ((!c.auto_renew && c.term_end < TAKEOVER) || !c.assignable),
     );
@@ -639,5 +697,6 @@ function crossSheetRules({ properties, units, tasks, contracts }: Dataset, name:
         sources: [taskRef(keys), contractRef(gate)],
       });
     }
+    // end rule
   }
 }

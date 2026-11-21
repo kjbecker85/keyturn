@@ -10,7 +10,8 @@ const VIEWS = [
   { label: "Critical exceptions", href: "/inbox?severity=1" },
   { label: "Vendor deadlines", href: "/inbox?area=vendors" },
   { label: "Rent roll flags", href: "/inbox?area=rent_roll" },
-  { label: "Cross-sheet contradictions", href: "/inbox?area=cross_sheet" },
+  { label: "Contradictions between sheets", href: "/contradictions" },
+  { label: "Rules", href: "/rules" },
   { label: "Unassigned exceptions", href: "/inbox?assignee=none" },
 ];
 

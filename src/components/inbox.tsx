@@ -56,6 +56,7 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
     property: params.get("property") ?? "",
     assignee: params.get("assignee") ?? "",
     q: params.get("q") ?? "",
+    rule: params.get("rule") ?? "",
   };
   const propertyName = useMemo(() => new Map(properties.map((p) => [p.id, p.name])), [properties]);
 
@@ -74,11 +75,12 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
         (!filter.severity || e.severity === Number(filter.severity)) &&
         (!filter.area || e.area === filter.area) &&
         (!filter.property || e.property_id === Number(filter.property)) &&
+        (!filter.rule || e.rule_key === filter.rule) &&
         (!filter.assignee ||
           (filter.assignee === "none" ? !e.assignee : e.assignee === filter.assignee)) &&
         (!q || `${e.title} ${e.detail}`.toLowerCase().includes(q)),
     );
-  }, [exceptions, filter.status, filter.severity, filter.area, filter.property, filter.assignee, filter.q]);
+  }, [exceptions, filter.status, filter.severity, filter.area, filter.property, filter.assignee, filter.q, filter.rule]);
 
   const selected = visible.find((e) => e.id === selectedId) ?? visible[0] ?? null;
   const open = exceptions.filter((e) => e.status === "open");
@@ -93,7 +95,7 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
     document.querySelector(`[data-exception="${selected?.id}"]`)?.scrollIntoView({ block: "nearest" });
   }, [selected?.id]);
 
-  const filtered = Boolean(filter.severity || filter.area || filter.property || filter.assignee || filter.q);
+  const filtered = Boolean(filter.severity || filter.area || filter.property || filter.assignee || filter.q || filter.rule);
 
   return (
     <div className="flex h-[calc(100dvh-var(--header-h))] flex-col">
@@ -119,6 +121,11 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
               </button>
             );
           })}
+          {filter.rule && (
+            <button type="button" className="chip" onClick={() => setFilter("rule", "")} title="Clear the rule filter">
+              Rule: <span className="font-mono text-xs">{filter.rule}</span> ×
+            </button>
+          )}
           <ExportButtons
             className="ml-auto"
             count={visible.length}

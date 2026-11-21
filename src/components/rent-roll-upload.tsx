@@ -125,9 +125,11 @@ export function RentRollUpload({
           />
         </label>
         <p className="text-xs text-muted">
-          Needs columns for {REQUIRED.map((f) => FIELD_LABEL[f].toLowerCase()).join(", ")}. A sample file for Trinity Bluffs is at{" "}
-          <a className="underline" href="/samples/trinity-bluffs-rent-roll.xlsx">trinity-bluffs-rent-roll.xlsx</a> and{" "}
-          <a className="underline" href="/samples/trinity-bluffs-rent-roll.csv">.csv</a>.
+          Needs columns for {REQUIRED.map((f) => FIELD_LABEL[f].toLowerCase()).join(", ")}. Synthetic sample files:{" "}
+          Brazos Landing (<a className="underline" href="/samples/brazos-landing-rent-roll.xlsx">Excel</a>,{" "}
+          <a className="underline" href="/samples/brazos-landing-rent-roll.csv">CSV</a>, a different column layout) and Trinity Bluffs (
+          <a className="underline" href="/samples/trinity-bluffs-rent-roll.xlsx">Excel</a>,{" "}
+          <a className="underline" href="/samples/trinity-bluffs-rent-roll.csv">CSV</a>).
         </p>
 
         {read && (
@@ -183,7 +185,7 @@ export function RentRollUpload({
         ) : (
           <>
             <p className="mt-1 text-sm text-muted">
-              {read.units.length} units read. Once loaded, {property.name} will have {preview.length} rent roll and cross-sheet flag
+              {read.units.length} units read. Once loaded, {property.name} will have {preview.length} rent roll and contradiction flag
               {preview.length === 1 ? "" : "s"}, including any already open.
             </p>
             {byRule.length > 0 && (

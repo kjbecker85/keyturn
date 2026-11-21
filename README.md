@@ -61,9 +61,9 @@ spreadsheets and email today, and no system owns it.
 | Vendors | Expired certificates of insurance | 3 |
 | Vendors | Contracts that can't transfer to a new manager | 24, one roll-up per property |
 | Vendors | Two contracts for the same service at one property | 2 |
-| Cross-sheet | Contradictions between sheets | 11 |
+| Contradictions | Two sheets disagree | 11 |
 
-The cross-sheet checks are the ones a single spreadsheet can't show:
+The contradiction checks are the ones a single spreadsheet can't show:
 
 - Elm Street Lofts' vendor review is blocked because the prior manager "hasn't sent contracts," yet seven of its contracts are in the vendor sheet.
 - Six system tasks (Yardi setup, ledger migration) are in progress or complete at properties with no rent roll in the data.

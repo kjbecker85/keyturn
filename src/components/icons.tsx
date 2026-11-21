@@ -2,6 +2,7 @@
 // Phosphor icons, duotone weight: a solid shape with a tinted second layer.
 import {
   ArrowRight,
+  BracketsCurly,
   Buildings,
   Calculator,
   CalendarBlank,
@@ -111,6 +112,8 @@ export const NAV_ICON: Record<string, Icon> = {
   "/brief": SunHorizon,
   "/activity": ClockCounterClockwise,
   "/about": Scales,
+  "/rules": BracketsCurly,
+  "/contradictions": GitDiff,
   "/business-case": Calculator,
   "/more": Rows,
 };

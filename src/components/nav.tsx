@@ -20,6 +20,7 @@ export const NAV_GROUPS = [
       { href: "/tasks", label: "Checklist" },
       { href: "/vendors", label: "Vendors" },
       { href: "/rent-roll", label: "Rent roll" },
+      { href: "/contradictions", label: "Contradictions" },
     ],
   },
   {
@@ -34,6 +35,7 @@ export const NAV_GROUPS = [
     label: "Trust",
     items: [
       { href: "/activity", label: "Activity" },
+      { href: "/rules", label: "Rules" },
       { href: "/about", label: "Assumptions" },
       { href: "/business-case", label: "Business case" },
     ],

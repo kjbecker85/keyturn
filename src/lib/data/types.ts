@@ -133,7 +133,7 @@ export const AREA_LABEL: Record<Area, string> = {
   rent_roll: "Rent roll",
   checklist: "Checklist",
   vendors: "Vendors",
-  cross_sheet: "Cross-sheet",
+  cross_sheet: "Contradictions",
 };
 
 export type Profile = {
