@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   addExceptionNote,
@@ -48,8 +48,6 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
   const focus = Number(params.get("focus")) || null;
   const [selectedId, setSelectedId] = useState<number | null>(focus);
   const [showDetail, setShowDetail] = useState(Boolean(focus));
-  const assignRef = useRef<HTMLSelectElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   const filter = {
     status: params.get("status") ?? "open",
@@ -91,28 +89,6 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
       setError(result.ok ? null : result.error);
     });
 
-  // Keyboard: j/k move, e resolve, a assign, / search.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement;
-      if (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) || e.metaKey || e.ctrlKey) return;
-      const index = selected ? visible.findIndex((x) => x.id === selected.id) : -1;
-      if (e.key === "j" && index < visible.length - 1) setSelectedId(visible[index + 1].id);
-      else if (e.key === "k" && index > 0) setSelectedId(visible[index - 1].id);
-      else if (e.key === "e" && selected?.status === "open") {
-        run(() => updateException(selected.id, { status: "resolved", resolution_note: `Resolved by ${me}.` }));
-      } else if (e.key === "a") {
-        e.preventDefault();
-        assignRef.current?.focus();
-      } else if (e.key === "/") {
-        e.preventDefault();
-        searchRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
-
   useEffect(() => {
     document.querySelector(`[data-exception="${selected?.id}"]`)?.scrollIntoView({ block: "nearest" });
   }, [selected?.id]);
@@ -143,15 +119,8 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
               </button>
             );
           })}
-          <span className="ml-auto hidden items-center gap-1.5 text-xs text-faint xl:flex">
-            <kbd className="kbd">j</kbd>
-            <kbd className="kbd">k</kbd> move
-            <kbd className="kbd ml-2">e</kbd> resolve
-            <kbd className="kbd ml-2">a</kbd> assign
-            <kbd className="kbd ml-2">/</kbd> search
-          </span>
           <ExportButtons
-            className="ml-auto xl:ml-0"
+            className="ml-auto"
             count={visible.length}
             sheet={() => toSheet("Inbox", exceptionColumns((id) => (id === null ? "Portfolio" : (propertyName.get(id) ?? ""))), visible)}
           />
@@ -165,7 +134,6 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
           <label className="relative col-span-2 sm:col-span-1">
             <MagnifyingGlass weight="bold" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-faint" />
             <input
-              ref={searchRef}
               className="field pl-9"
               placeholder="Search exceptions"
               aria-label="Search exceptions"
@@ -293,7 +261,6 @@ export function Inbox({ exceptions, properties, assignees, views, audit, actors,
               e={selected}
               property={selected.property_id ? propertyName.get(selected.property_id) : undefined}
               assignees={assignees}
-              assignRef={assignRef}
               audit={audit.filter((a) => a.entity_id === String(selected.id))}
               actors={actors}
               me={me}
@@ -332,7 +299,6 @@ function Detail({
   e,
   property,
   assignees,
-  assignRef,
   audit,
   actors,
   me,
@@ -343,7 +309,6 @@ function Detail({
   e: ExceptionRow;
   property?: string;
   assignees: string[];
-  assignRef: React.RefObject<HTMLSelectElement | null>;
   audit: AuditRow[];
   actors: Record<string, string>;
   me: string;
@@ -409,7 +374,6 @@ function Detail({
         <label className="text-xs font-medium text-muted">
           Assignee
           <select
-            ref={assignRef}
             className="field mt-1.5"
             value={e.assignee ?? ""}
             disabled={pending}
